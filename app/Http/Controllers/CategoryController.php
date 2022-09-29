@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Conf\Config;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -9,25 +10,156 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
-        $response = array(
-            "STATUS"=>200,
-            "MESSAGE" =>"Categories Fetched Successfully",
-            "DATA"=>$categories
-        );
+        try {
+            $categories = Category::all();
+            if(count($categories) > 0)
+            {
+                $response = array(
+                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" =>"Categories Fetched Successfully",
+                    "DATA"=>$categories
+                );
+            }else
+            {
+                $response = array(
+                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" =>"No Records Found",
+                    "DATA"=>$categories
+                );
+            }
+        }catch (\Exception $e)
+        {
+            $response = array(
+                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
+                "DATA"=>[]
+            );
+        }
         return json_encode($response);
     }
     public function create(Request $request)
     {
-        $name = $request->name;
-        $category =Category::create([
-            "name"=>$name
-        ]);
-        $response = array(
-            "STATUS"=>200,
-            "MESSAGE" =>"Category Created Successfully",
-            "DATA"=>$category
-        );
+        try {
+            $name = $request->name;
+            $category =Category::create([
+                "name"=>$name
+            ]);
+            if(isset($category->id))
+            {
+                $response = array(
+                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" =>"Category Created Successfully",
+                    "DATA"=>$category
+                );
+            }else
+            {
+                $response = array(
+                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" =>"Error occurred in creating Category",
+                    "DATA"=>$category
+                );
+            }
+        }catch (\Exception $e)
+        {
+            $response = array(
+                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
+                "DATA"=>[]
+            );
+        }
+        return json_encode($response);
+    }
+    public function update(Request $request)
+    {
+        try {
+            $name = $request->name;
+            $id = $request->id;
+            $recordsUpdated =Category::where(['id'=>$id])
+                ->update([
+                    "name"=>$name
+                ]);
+            if($recordsUpdated >0)
+            {
+                $response = array(
+                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" =>"Category Updated Successfully",
+                    "DATA"=>[]
+                );
+            }else
+            {
+                $response = array(
+                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" =>"Error occurred in updating",
+                    "DATA"=>[]
+                );
+            }
+        }catch (\Exception $e)
+        {
+            $response = array(
+                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
+                "DATA"=>[]
+            );
+        }
+        return json_encode($response);
+    }
+
+    public function findById(Request $request)
+    {
+        try {
+            $category = Category::where(['id'=>$request->id])->first();
+            if(isset($category->id))
+            {
+                $response = array(
+                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" =>"Category Fetched Successfully",
+                    "DATA"=>$category
+                );
+            }else
+            {
+                $response = array(
+                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" =>"No Category Found",
+                    "DATA"=>[]
+                );
+            }
+        }catch (\Exception $e)
+        {
+            $response = array(
+                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
+                "DATA"=>[]
+            );
+        }
+        return json_encode($response);
+    }
+    public function deleteById(Request $request)
+    {
+        try {
+            $records = Category::where(['id'=>$request->id])->delete();
+            if(isset($records)>0)
+            {
+                $response = array(
+                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" =>"Category deleted Successfully",
+                    "DATA"=>[]
+                );
+            }else
+            {
+                $response = array(
+                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" =>"No Category Found",
+                    "DATA"=>[]
+                );
+            }
+        }catch (\Exception $e)
+        {
+            $response = array(
+                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
+                "DATA"=>[]
+            );
+        }
         return json_encode($response);
     }
 }
