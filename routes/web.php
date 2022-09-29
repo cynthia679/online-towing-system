@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+$router->group(['prefix' => 'api/v1'], function($router)
+{
+    $router->post('category/index','\App\Http\Controllers\CategoryController@index');
+    $router->post('category/create','\App\Http\Controllers\CategoryController@create');
+});
