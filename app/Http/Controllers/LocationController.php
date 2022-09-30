@@ -69,6 +69,7 @@ class LocationController extends Controller
         }
         return json_encode($response);
     }
+
     public function update(Request $request)
     {
         try {

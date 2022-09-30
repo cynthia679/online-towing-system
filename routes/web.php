@@ -33,3 +33,4 @@ $router->group(['prefix' => 'api/v1/location/'], function($router)
     $router->post('delete','\App\Http\Controllers\LocationController@deleteById');
     $router->post('findById','\App\Http\Controllers\LocationController@findById');
 });
+
