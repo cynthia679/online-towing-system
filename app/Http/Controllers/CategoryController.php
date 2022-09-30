@@ -50,6 +50,7 @@ class CategoryController extends Controller
                     "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
                     "MESSAGE" =>"Category Created Successfully",
                     "DATA"=>$category
+
                 );
             }else
             {

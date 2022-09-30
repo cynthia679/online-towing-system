@@ -39,9 +39,20 @@ class UserController extends Controller
     public function create(Request $request)
     {
         try {
-            $name = $request->name;
-            $orders =User::create([
-                "name"=>$name
+            $name = $request->firstName;
+            $name = $request->lastName;
+            $status = $request->status;
+            $activationCode = $request->activationCode;
+            $activatedAt = $request->activatedAt;
+            $email = $request->email;
+            $password= $request->password;
+            $users =User::create([
+                "name"=>$name,
+                "status"=>$status,
+                "activationCode"=>$activationCode,
+                "activatedAt"=>$activatedAt,
+                "email"=>$email,
+                "password"=>$password,
             ]);
             if(isset($users->id))
             {
@@ -71,11 +82,22 @@ class UserController extends Controller
     public function update(Request $request)
     {
         try {
-            $name = $request->name;
-            $id = $request->id;
+            $name = $request->firstName;
+            $name = $request->lastName;
+            $status = $request->status;
+            $activationCode = $request->activationCode;
+            $activatedAt = $request->activatedAt;
+            $email = $request->email;
+            $password= $request->password;
             $recordsUpdated =User::where(['id'=>$id])
                 ->update([
-                    "name"=>$name
+                    "name"=>$name,
+                    "status"=>$status,
+                    "activationCode"=>$activationCode,
+                    "activatedAt"=>$activatedAt,
+                    "email"=>$email,
+                    "password"=>$password,
+
                 ]);
             if($recordsUpdated >0)
             {
