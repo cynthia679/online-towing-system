@@ -39,9 +39,28 @@ class ClientController extends Controller
     public function create(Request $request)
     {
         try {
-            $name = $request->name;
+            $MSISDN = $request->MSISDN;
+             $name = $request->firstName;
+              $name = $request->lastName;
+               $email = $request->email;
+                $password = $request->password;
+                 $status = $request->status;
+                  $activationCode = $request->activationCode;
+                   $loggedIn = $request->loggedIn;
+                    $loggedInAt = $request->loggedInAt;
+                     $dateModified = $request->dateModified;
+                      $dateCreated = $request->dateCreated;
             $client =Client::create([
-                "name"=>$name
+                "name"=>$name,
+                "email"=>$email,
+                "password"=>$password,
+                "status"=>$status,
+                "activationCode "=>$activationCode ,
+                "loggedIn"=>$loggedIn,
+                "loggedInAt"=>$loggedInAt,
+                "dateModified"=>$dateModified,
+                "dateCreated"=>$dateCreated,
+
             ]);
             if(isset($client->id))
             {
@@ -71,11 +90,29 @@ class ClientController extends Controller
     public function update(Request $request)
     {
         try {
-            $name = $request->name;
             $id = $request->id;
+            $MSISDN = $request->MSISDN;
+            $name = $request->firstName;
+            $name = $request->lastName;
+            $email = $request->email;
+            $password = $request->password;
+            $status = $request->status;
+            $activationCode = $request->activationCode;
+            $loggedIn = $request->loggedIn;
+            $loggedInAt = $request->loggedInAt;
+            $dateModified = $request->dateModified;
+            $dateCreated = $request->dateCreated;
             $recordsUpdated =Client::where(['id'=>$id])
                 ->update([
-                    "name"=>$name
+                    "name"=>$name,
+                    "email"=>$email,
+                    "password"=>$password,
+                    "status"=>$status,
+                    "activationCode "=>$activationCode ,
+                    "loggedIn"=>$loggedIn,
+                    "loggedInAt"=>$loggedInAt,
+                    "dateModified"=>$dateModified,
+                    "dateCreated"=>$dateCreated,
                 ]);
             if($recordsUpdated >0)
             {
