@@ -38,10 +38,42 @@ class TransactionController extends Controller
     }
     public function create(Request $request)
     {
-        try {
-            $name = $request->name;
-            $orders =Transaction::create([
-                "name"=>$name
+        try
+        {
+            $MSISDN = $request->MSISDN;
+             $accountNumber = $request->accountNumber;
+                  $amount = $request->amount;
+                       $mpesaReceiptNumber = $request->mpesaReceiptNumber;
+                        $balance = $request->balance;
+                             $transactionDate = $request->transactionDate;
+                                  $namemerchantRequestID = $request->merchantRequestID;
+                                       $checkoutRequestID = $request->checkoutRequestID
+                                           $resultCode = $request->resultCode;
+                                               $resultDesc = $request->resultDesc;
+                                               $status = $request->status;
+                                               $businessShortCode = $request->businessShortCode;
+                                               $transactionType= $request->transactionType;
+                                                $dateModified= $request->dateModified;
+                                                 $dateCreated= $request->dateCreated;
+
+
+            $transaction =Transaction::create([
+                "MSISDN"=>$MSISDN,
+                "accountNumber"=>$accountNumber,
+                "amount"=>$amount,
+                "mpesaReceiptNumber"=>$mpesaReceiptNumber,
+                "balance"=>$balance,
+                "transactionDate"=>$transactionDate,
+                "namemerchantRequestID"=>$namemerchantRequestID,
+                "checkoutRequestID"=>$checkoutRequestID,
+                "resultCode"=>$resultCode,
+                "resultDesc"=>$resultDesc,
+                "status "=>$status ,
+                "businessShortCode"=>$businessShortCode,
+               "transactionType"=>$transactionType,
+                "dateModified"=>$dateModified,
+                "dateCreated"=>$dateCreated,
+
             ]);
             if(isset($transaction->id))
             {
@@ -71,11 +103,39 @@ class TransactionController extends Controller
     public function update(Request $request)
     {
         try {
-            $name = $request->name;
-            $id = $request->id;
+
+            $MSISDN = $request->MSISDN;
+            $accountNumber = $request->accountNumber;
+            $amount = $request->amount;
+            $mpesaReceiptNumber = $request->mpesaReceiptNumber;
+            $balance = $request->balance;
+            $transactionDate = $request->transactionDate;
+            $namemerchantRequestID = $request->merchantRequestID;
+            $checkoutRequestID = $request->checkoutRequestID
+                                           $resultCode = $request->resultCode;
+                                               $resultDesc = $request->resultDesc;
+                                               $status = $request->status;
+                                               $businessShortCode = $request->businessShortCode;
+                                               $transactionType= $request->transactionType;
+                                                $dateModified= $request->dateModified;
+                                                 $dateCreated= $request->dateCreated;
             $recordsUpdated =Transaction::where(['id'=>$id])
                 ->update([
-                    "name"=>$name
+                "MSISDN"=>$MSISDN,
+                "accountNumber"=>$accountNumber,
+                "amount"=>$amount,
+                "mpesaReceiptNumber"=>$mpesaReceiptNumber,
+                "balance"=>$balance,
+                "transactionDate"=>$transactionDate,
+                "namemerchantRequestID"=>$namemerchantRequestID,
+                "checkoutRequestID"=>$checkoutRequestID,
+                "resultCode"=>$resultCode,
+                "resultDesc"=>$resultDesc,
+                "status "=>$status ,
+                "businessShortCode"=>$businessShortCode,
+               "transactionType"=>$transactionType,
+                "dateModified"=>$dateModified,
+                "dateCreated"=>$dateCreated,
                 ]);
             if($recordsUpdated >0)
             {
