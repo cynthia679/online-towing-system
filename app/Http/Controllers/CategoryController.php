@@ -41,8 +41,15 @@ class CategoryController extends Controller
     {
         try {
             $name = $request->name;
+              $status = $request->status;
+              $dateModified = $request->dateModified;
+                $dateCreated = $request->dateCreated;
+
             $category =Category::create([
-                "name"=>$name
+                "name"=>$name,
+                     "status"=>$status,
+                     "dateModified"=>$dateModified,
+                     "dateCreated"=>$dateCreated,
             ]);
             if(isset($category->id))
             {
@@ -75,9 +82,15 @@ class CategoryController extends Controller
         try {
             $name = $request->name;
             $id = $request->id;
+            $status = $request->status;
+            $dateModified = $request->dateModified;
+            $dateCreated = $request->dateCreated;
             $recordsUpdated =Category::where(['id'=>$id])
                 ->update([
-                    "name"=>$name
+                    "name"=>$name,
+                     "status"=>$status,
+                     "dateModified"=>$dateModified,
+                     "dateCreated"=>$dateCreated,
                 ]);
             if($recordsUpdated >0)
             {
