@@ -89,6 +89,15 @@ $router->group(['prefix' => 'api/v1/CustomerRequest/'], function($router)
     $router->post('findById','\App\Http\Controllers\CustomerRequestController@findById');
 
 });
+$router->group(['prefix' => 'api/v1/Order/'], function($router)
+{
+    $router->post('findById','\App\Http\Controllers\OrderController@findById');
+    $router->post('create','\App\Http\Controllers\Order@create');
+    $router->post('update','\App\Http\Controllers\OrderController@update');
+    $router->post('delete','\App\Http\Controllers\OrderController@deleteById');
+    $router->post('findById','\App\Http\Controllers\OrderController@findById');
+
+});
 
 
 
