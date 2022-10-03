@@ -41,9 +41,27 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
-            $name = $request->name;
+            $userId = $request->userId;
+              $customerRequestId = $request->customerRequestId;
+            $clientId = $request->clientId;
+               $fromAddress = $request->fromAddress;
+                $toAddress = $request->toAddress;
+                 $charge = $request->charge;
+                  $distance = $request->distance;
+                   $status = $request->status;
+                    $dateModified = $request->dateModified;
+                     $dateCreated = $request->dateCreated;
             $orders =Order::create([
-                "name"=>$name
+                "userId"=>$userId,
+                "customerRequestId"=>$customerRequestId,
+                "clientId"=>$clientId,
+                "fromAddress"=>$fromAddress,
+                "toAddress"=>$toAddress,
+                "charge"=>$charge,
+                "distance"=>$distance,
+                "status"=>$status,
+                "dateModified"=>$dateModified,
+                "dateCreated"=>$dateCreated,
             ]);
             if(isset($orders->id))
             {
@@ -73,11 +91,29 @@ class OrderController extends Controller
     public function update(Request $request)
     {
         try {
-            $name = $request->name;
-            $id = $request->id;
+            $id=$request->id;
+            $userId = $request->userId;
+            $customerRequestId = $request->customerRequestId;
+            $clientId = $request->clientId;
+            $fromAddress = $request->fromAddress;
+            $toAddress = $request->toAddress;
+            $charge = $request->charge;
+            $distance = $request->distance;
+            $status = $request->status;
+            $dateModified = $request->dateModified;
+            $dateCreated = $request->dateCreated;
             $recordsUpdated =Order::where(['id'=>$id])
                 ->update([
-                    "name"=>$name
+                    "userId"=>$userId,
+                    "customerRequestId"=>$customerRequestId,
+                    "clientId"=>$clientId,
+                    "fromAddress"=>$fromAddress,
+                    "toAddress"=>$toAddress,
+                    "charge"=>$charge,
+                    "distance"=>$distance,
+                    "status"=>$status,
+                    "dateModified"=>$dateModified,
+                    "dateCreated"=>$dateCreated,
                 ]);
             if($recordsUpdated >0)
             {
