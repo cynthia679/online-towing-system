@@ -103,7 +103,7 @@ class TransactionController extends Controller
     public function update(Request $request)
     {
         try {
-
+            $id = $request->id;
             $MSISDN = $request->MSISDN;
             $accountNumber = $request->accountNumber;
             $amount = $request->amount;
@@ -111,7 +111,7 @@ class TransactionController extends Controller
             $balance = $request->balance;
             $transactionDate = $request->transactionDate;
             $namemerchantRequestID = $request->merchantRequestID;
-            $checkoutRequestID = $request->checkoutRequestID
+            $checkoutRequestID = $request->checkoutRequestID;
                                            $resultCode = $request->resultCode;
                                                $resultDesc = $request->resultDesc;
                                                $status = $request->status;
