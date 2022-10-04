@@ -39,9 +39,26 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         try {
+
             $name = $request->name;
+            $make = $request->make;
+            $yom = $request->yom;
+            $registrationNumber = $request->registrationNumber;
+            $color = $request->color;
+            $description = $request->description;
+            $status = $request->status;
+             $dateModified = $request->dateModified;
+             $dateCreated = $request->dateCreated;
             $product =Product::create([
-                "name"=>$name
+                "name"=>$name,
+                 "make"=>$make,
+                 "yom"=>$yom,
+                 "registrationNumber"=>$registrationNumber,
+                 "color"=>$color,
+                 "description"=>$description,
+                 "status"=>$status,
+                 "dateModified"=>$dateModified,
+                 "dateCreated"=>$dateCreated,
             ]);
             if(isset($product->id))
             {
@@ -73,9 +90,25 @@ class ProductController extends Controller
         try {
             $name = $request->name;
             $id = $request->id;
+            $make = $request->make;
+            $yom = $request->yom;
+            $registrationNumber = $request->registrationNumber;
+            $color = $request->color;
+            $description = $request->description;
+            $status = $request->status;
+            $dateModified = $request->dateModified;
+            $dateCreated = $request->dateCreated;
             $recordsUpdated =Product::where(['id'=>$id])
                 ->update([
-                    "name"=>$name
+                    "name"=>$name,
+                 "make"=>$make,
+                 "yom"=>$yom,
+                 "registrationNumber"=>$registrationNumber,
+                 "color"=>$color,
+                 "description"=>$description,
+                 "status"=>$status,
+                 "dateModified"=>$dateModified,
+                 "dateCreated"=>$dateCreated,
                 ]);
             if($recordsUpdated >0)
             {
