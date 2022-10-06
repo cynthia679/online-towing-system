@@ -46,9 +46,9 @@ $router->group(['prefix' => 'api/v1/client/'], function($router)
 $router->group(['prefix' => 'api/v1/product/'], function($router)
 {
     $router->post('findById','\App\Http\Controllers\ProductController@findById');
-    $router->post('create','\App\Http\Controllers\Product@create');
+    $router->post('create','\App\Http\Controllers\ProductController@create');
     $router->post('update','\App\Http\Controllers\ProductController@update');
-    $router->post('delete','\App\Http\Controllers\ProductLocationController@deleteById');
+    $router->post('delete','\App\Http\Controllers\ProductController@deleteById');
     $router->post('findById','\App\Http\Controllers\ProductController@findById');
 
 });
@@ -66,7 +66,7 @@ $router->group(['prefix' => 'api/v1/user/'], function($router)
     $router->post('findById','\App\Http\Controllers\UserController@findById');
     $router->post('create','\App\Http\Controllers\User@create');
     $router->post('update','\App\Http\Controllers\UserController@update');
-    $router->post('delete','\App\Http\Controllers\UserLocationController@deleteById');
+    $router->post('delete','\App\Http\Controllers\UserController@deleteById');
     $router->post('findById','\App\Http\Controllers\UserController@findById');
 
 });

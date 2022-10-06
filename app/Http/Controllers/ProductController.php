@@ -2,40 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Conf\Config;
+use App\Helpers\GeneralFunctions;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    private $functions;
+
+    function __construct()
+    {
+        $this->functions = new GeneralFunctions();
+    }
+
     public function index()
     {
         try {
             $product = Product::all();
-            if(count($product) > 0)
-            {
+            if (count($product) > 0) {
                 $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"ProductsFetched Successfully",
-                    "DATA"=>$product
+                    "STATUS" => Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" => "ProductsFetched Successfully",
+                    "DATA" => $product
                 );
-            }else
-            {
+            } else {
                 $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"No Records Found",
-                    "DATA"=>$product
+                    "STATUS" => Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" => "No Records Found",
+                    "DATA" => $product
                 );
             }
-        }catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
-                "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
+                "STATUS" => Config::GENERIC_EXCEPTION_CODE,
+                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
+                "DATA" => []
             );
         }
         return json_encode($response);
     }
+
     public function create(Request $request)
     {
         try {
@@ -46,45 +53,39 @@ class ProductController extends Controller
             $registrationNumber = $request->registrationNumber;
             $color = $request->color;
             $description = $request->description;
-            $status = $request->status;
-             $dateModified = $request->dateModified;
-             $dateCreated = $request->dateCreated;
-            $product =Product::create([
-                "name"=>$name,
-                 "make"=>$make,
-                 "yom"=>$yom,
-                 "registrationNumber"=>$registrationNumber,
-                 "color"=>$color,
-                 "description"=>$description,
-                 "status"=>$status,
-                 "dateModified"=>$dateModified,
-                 "dateCreated"=>$dateCreated,
+            $product = Product::create([
+                "name" => $name,
+                "make" => $make,
+                "yom" => $yom,
+                "registrationNumber" => $registrationNumber,
+                "color" => $color,
+                "description" => $description,
+                "status" => Config::ACTIVE,
+                "dateCreated" => $this->functions->curlDate(),
             ]);
-            if(isset($product->id))
-            {
+            if (isset($product->id)) {
                 $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Product Created Successfully",
-                    "DATA"=>$product
+                    "STATUS" => Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" => "Product Created Successfully",
+                    "DATA" => $product
                 );
-            }else
-            {
+            } else {
                 $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"Error occurred in creating Product",
-                    "DATA"=>$product
+                    "STATUS" => Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" => "Error occurred in creating Product",
+                    "DATA" => $product
                 );
             }
-        }catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
-                "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
+                "STATUS" => Config::GENERIC_EXCEPTION_CODE,
+                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
+                "DATA" => []
             );
         }
         return json_encode($response);
     }
+
     public function update(Request $request)
     {
         try {
@@ -95,42 +96,35 @@ class ProductController extends Controller
             $registrationNumber = $request->registrationNumber;
             $color = $request->color;
             $description = $request->description;
-            $status = $request->status;
-            $dateModified = $request->dateModified;
-            $dateCreated = $request->dateCreated;
-            $recordsUpdated =Product::where(['id'=>$id])
+            $recordsUpdated = Product::where(['id' => $id])
                 ->update([
-                    "name"=>$name,
-                 "make"=>$make,
-                 "yom"=>$yom,
-                 "registrationNumber"=>$registrationNumber,
-                 "color"=>$color,
-                 "description"=>$description,
-                 "status"=>$status,
-                 "dateModified"=>$dateModified,
-                 "dateCreated"=>$dateCreated,
+                    "name" => $name,
+                    "make" => $make,
+                    "yom" => $yom,
+                    "registrationNumber" => $registrationNumber,
+                    "color" => $color,
+                    "description" => $description,
+                    "status" => Config::ACTIVE,
+                    "dateModified" => $this->functions->curlDate()
                 ]);
-            if($recordsUpdated >0)
-            {
+            if ($recordsUpdated > 0) {
                 $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Product Updated Successfully",
-                    "DATA"=>[]
+                    "STATUS" => Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" => "Product Updated Successfully",
+                    "DATA" => []
                 );
-            }else
-            {
+            } else {
                 $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"Error occurred in updating",
-                    "DATA"=>[]
+                    "STATUS" => Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" => "Error occurred in updating",
+                    "DATA" => []
                 );
             }
-        }catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "STATUS" => Config::GENERIC_EXCEPTION_CODE,
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
+                "DATA" => []
             );
         }
         return json_encode($response);
@@ -139,62 +133,57 @@ class ProductController extends Controller
     public function findById(Request $request)
     {
         try {
-            $orders = Category::where(['id'=>$request->id])->first();
-            if(isset($product->id))
-            {
+            $product = Product::where(['id' => $request->id])->first();
+            if (isset($product->id)) {
                 $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Product Fetched Successfully",
-                    "DATA"=>$product
+                    "STATUS" => Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" => "Product Fetched Successfully",
+                    "DATA" => $product
                 );
-            }else
-            {
+            } else {
                 $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"No Product Found",
-                    "DATA"=>[]
+                    "STATUS" => Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" => "No Product Found",
+                    "DATA" => []
                 );
             }
-        }catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "STATUS" => Config::GENERIC_EXCEPTION_CODE,
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
+                "DATA" => []
             );
         }
         return json_encode($response);
     }
+
     public function deleteById(Request $request)
     {
         try {
-            $records = Product::where(['id'=>$request->id])->delete();
-            if(isset($records)>0)
-            {
+            $records = Product::where(['id' => $request->id])->delete();
+            if (isset($records) > 0) {
                 $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Product deleted Successfully",
-                    "DATA"=>[]
+                    "STATUS" => Config::SUCCESSFULLY_PROCESSED_REQUEST,
+                    "MESSAGE" => "Product deleted Successfully",
+                    "DATA" => []
                 );
-            }else
-            {
+            } else {
                 $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"No Product Found",
-                    "DATA"=>[]
+                    "STATUS" => Config::RECORD_NOT_FOUND_CODE,
+                    "MESSAGE" => "No Product Found",
+                    "DATA" => []
                 );
             }
-        }catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
+                "STATUS" => Config::GENERIC_EXCEPTION_CODE,
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
+                "DATA" => []
             );
         }
         return json_encode($response);
 
-}
+    }
 
 
 }

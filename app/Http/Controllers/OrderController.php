@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Conf\Config;
+use App\Helpers\GeneralFunctions;
 use App\Models\Category;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -9,6 +11,13 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 
 {
+    private $functions;
+
+    function __construct()
+    {
+        $this->functions = new GeneralFunctions();
+    }
+
     public function index()
     {
         try {
@@ -48,9 +57,9 @@ class OrderController extends Controller
                 $toAddress = $request->toAddress;
                  $charge = $request->charge;
                   $distance = $request->distance;
-                   $status = $request->status;
+                   $status = $request->Config::ACTIVE;
                     $dateModified = $request->dateModified;
-                     $dateCreated = $request->dateCreated;
+                     $dateCreated = $request->$this->functions->curlDate();
             $orders =Order::create([
                 "userId"=>$userId,
                 "customerRequestId"=>$customerRequestId,
@@ -59,9 +68,9 @@ class OrderController extends Controller
                 "toAddress"=>$toAddress,
                 "charge"=>$charge,
                 "distance"=>$distance,
-                "status"=>$status,
+                "status"=>Config::ACTIVE,
                 "dateModified"=>$dateModified,
-                "dateCreated"=>$dateCreated,
+                "dateCreated"=>$this->functions->curlDate(),
             ]);
             if(isset($orders->id))
             {
@@ -99,9 +108,9 @@ class OrderController extends Controller
             $toAddress = $request->toAddress;
             $charge = $request->charge;
             $distance = $request->distance;
-            $status = $request->status;
+            $status = $request->Config::ACTIVE;
             $dateModified = $request->dateModified;
-            $dateCreated = $request->dateCreated;
+            $dateCreated = $request->$this->functions->curlDate();
             $recordsUpdated =Order::where(['id'=>$id])
                 ->update([
                     "userId"=>$userId,
@@ -111,9 +120,9 @@ class OrderController extends Controller
                     "toAddress"=>$toAddress,
                     "charge"=>$charge,
                     "distance"=>$distance,
-                    "status"=>$status,
+                    "status"=>Config::ACTIVE,
                     "dateModified"=>$dateModified,
-                    "dateCreated"=>$dateCreated,
+                    "dateCreated"=>$this->functions->curlDate(),
                 ]);
             if($recordsUpdated >0)
             {

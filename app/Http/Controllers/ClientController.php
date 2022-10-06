@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Conf\Config;
+use App\Helpers\GeneralFunctions;
 use http\Client;
 use Illuminate\Http\Request;
 
+
 class ClientController extends Controller
 {
+    private $functions;
+
+    function __construct()
+    {
+        $this->functions = new GeneralFunctions();
+    }
+
     public function index()
     {
         try {
@@ -44,22 +54,20 @@ class ClientController extends Controller
               $name = $request->lastName;
                $email = $request->email;
                 $password = $request->password;
-                 $status = $request->status;
+                 $status = $request->Config::ACTIVE;
                   $activationCode = $request->activationCode;
                    $loggedIn = $request->loggedIn;
-                    $loggedInAt = $request->loggedInAt;
-                     $dateModified = $request->dateModified;
-                      $dateCreated = $request->dateCreated;
+                    $loggedInAt = $request->$this->functions->curlDate();
+                      $dateCreated = $request->$this->functions->curlDate();
             $client =Client::create([
                 "name"=>$name,
                 "email"=>$email,
                 "password"=>$password,
-                "status"=>$status,
+                "status"=>Config::ACTIVE,
                 "activationCode "=>$activationCode ,
                 "loggedIn"=>$loggedIn,
-                "loggedInAt"=>$loggedInAt,
-                "dateModified"=>$dateModified,
-                "dateCreated"=>$dateCreated,
+                "loggedInAt"=>$this->functions->curlDate(),
+                "dateCreated"=>$this->functions->curlDate(),
 
             ]);
             if(isset($client->id))
@@ -96,23 +104,23 @@ class ClientController extends Controller
             $name = $request->lastName;
             $email = $request->email;
             $password = $request->password;
-            $status = $request->status;
+            $status = $request->Config::ACTIVE;
             $activationCode = $request->activationCode;
             $loggedIn = $request->loggedIn;
-            $loggedInAt = $request->loggedInAt;
+            $loggedInAt = $request->$this->functions->curlDate();
             $dateModified = $request->dateModified;
-            $dateCreated = $request->dateCreated;
+            $dateCreated = $request->$this->functions->curlDate();
             $recordsUpdated =Client::where(['id'=>$id])
                 ->update([
                     "name"=>$name,
                     "email"=>$email,
                     "password"=>$password,
-                    "status"=>$status,
+                    "status"=>Config::ACTIVE,
                     "activationCode "=>$activationCode ,
                     "loggedIn"=>$loggedIn,
-                    "loggedInAt"=>$loggedInAt,
+                    "loggedInAt"=>$this->functions->curlDate(),
                     "dateModified"=>$dateModified,
-                    "dateCreated"=>$dateCreated,
+                    "dateCreated"=>$this->functions->curlDate(),
                 ]);
             if($recordsUpdated >0)
             {

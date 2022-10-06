@@ -12,4 +12,6 @@ class Config
     const RECORD_NOT_FOUND_CODE= 1004;
     const RECORD_ALREADY_PROCESSED= 1005;
     const GENERIC_EXCEPTION_MESSAGE= "The service is currently unavailable, try again later";
+    const ACTIVE = 1;
+    const INACTIVE =0;
 }
