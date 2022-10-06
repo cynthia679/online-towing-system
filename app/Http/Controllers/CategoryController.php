@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Conf\Config;
+use App\Helpers\GeneralFunctions;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    private $functions;
+
+    function __construct()
+    {
+        $this->functions = new GeneralFunctions();
+    }
+
     public function index()
     {
         try {

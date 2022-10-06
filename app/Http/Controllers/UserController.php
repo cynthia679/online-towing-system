@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Conf\Config;
+use App\Helpers\GeneralFunctions;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    private $functions;
+
+    function __construct()
+    {
+        $this->functions = new GeneralFunctions();
+    }
+
     public function index()
     {
         try {
@@ -22,7 +31,7 @@ class UserController extends Controller
             {
                 $response = array(
                     "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"No Records Found",
+                    "MESSAGE" =>"No users Found",
                     "DATA"=>$users
                 );
             }
@@ -41,18 +50,18 @@ class UserController extends Controller
         try {
             $name = $request->firstName;
             $name = $request->lastName;
-            $status = $request->status;
-            $activationCode = $request->activationCode;
-            $activatedAt = $request->activatedAt;
+            $status = $request->Config::ACTIVE;
+            $activationCode = $request->activationCode;,
+            $activatedAt = $request->$this->functions->curlDate();
             $email = $request->email;
             $password= $request->password;
             $users =User::create([
-                "name"=>$name,
-                "status"=>$status,
-                "activationCode"=>$activationCode,
-                "activatedAt"=>$activatedAt,
-                "email"=>$email,
-                "password"=>$password,
+                "name" => $name,
+                "status" => Config::ACTIVE,
+                "activationCode" => $activationCode,
+                "activatedAt" => $this->functions->curlDate(),
+                "email" => $email,
+                "password" => $password,
             ]);
             if(isset($users->id))
             {
@@ -79,22 +88,22 @@ class UserController extends Controller
         }
         return json_encode($response);
     }
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         try {
             $name = $request->firstName;
             $name = $request->lastName;
-            $status = $request->status;
+            $status = $request->Config::ACTIVE;
             $activationCode = $request->activationCode;
-            $activatedAt = $request->activatedAt;
+            $activatedAt = $request->$this->functions->curlDate();
             $email = $request->email;
             $password= $request->password;
-            $recordsUpdated =User::where(['id'=>$id])
+            $recordsUpdated =User::where(['id' => $id])
                 ->update([
                     "name"=>$name,
-                    "status"=>$status,
+                    "status"=>Config::ACTIVE,
                     "activationCode"=>$activationCode,
-                    "activatedAt"=>$activatedAt,
+                    "activatedAt"=>$this->functions->curlDate(),
                     "email"=>$email,
                     "password"=>$password,
 
@@ -128,7 +137,7 @@ class UserController extends Controller
     public function findById(Request $request)
     {
         try {
-            $orders = Category::where(['id'=>$request->id])->first();
+            $users = User::where(['id'=>$request->id])->first();
             if(isset($users->id))
             {
                 $response = array(

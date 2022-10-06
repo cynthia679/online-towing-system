@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Conf\Config;
+use App\Helpers\GeneralFunctions;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
+    private $functions;
+
+    function __construct()
+    {
+        $this->functions = new GeneralFunctions();
+    }
+
     public function index()
     {
         try {
@@ -45,16 +54,16 @@ class TransactionController extends Controller
                   $amount = $request->amount;
                        $mpesaReceiptNumber = $request->mpesaReceiptNumber;
                         $balance = $request->balance;
-                             $transactionDate = $request->transactionDate;
+                             $transactionDate = $request->$this->functions->curlDate();
                                   $namemerchantRequestID = $request->merchantRequestID;
                                        $checkoutRequestID = $request->checkoutRequestID
                                            $resultCode = $request->resultCode;
                                                $resultDesc = $request->resultDesc;
-                                               $status = $request->status;
+                                               $status = $request->Config::ACTIVE;
                                                $businessShortCode = $request->businessShortCode;
                                                $transactionType= $request->transactionType;
-                                                $dateModified= $request->dateModified;
-                                                 $dateCreated= $request->dateCreated;
+                                                $dateModified= $request->$this->functions->curlDate();
+                                                 $dateCreated= $request->$this->functions->curlDate;
 
 
             $transaction =Transaction::create([
@@ -68,11 +77,11 @@ class TransactionController extends Controller
                 "checkoutRequestID"=>$checkoutRequestID,
                 "resultCode"=>$resultCode,
                 "resultDesc"=>$resultDesc,
-                "status "=>$status ,
+                "status "=>Config::ACTIVE ,
                 "businessShortCode"=>$businessShortCode,
                "transactionType"=>$transactionType,
-                "dateModified"=>$dateModified,
-                "dateCreated"=>$dateCreated,
+                "dateModified"=>$this->functions->curlDate(),
+                "dateCreated"=>$this->functions->curlDate(),
 
             ]);
             if(isset($transaction->id))
@@ -114,11 +123,11 @@ class TransactionController extends Controller
             $checkoutRequestID = $request->checkoutRequestID;
                                            $resultCode = $request->resultCode;
                                                $resultDesc = $request->resultDesc;
-                                               $status = $request->status;
+                                               $status = $request->Config::ACTIVE;
                                                $businessShortCode = $request->businessShortCode;
                                                $transactionType= $request->transactionType;
-                                                $dateModified= $request->dateModified;
-                                                 $dateCreated= $request->dateCreated;
+                                                $dateModified= $request->$this->functions->curlDate();
+                                                 $dateCreated= $request->$this->functions->curlDate();
             $recordsUpdated =Transaction::where(['id'=>$id])
                 ->update([
                 "MSISDN"=>$MSISDN,
@@ -131,11 +140,11 @@ class TransactionController extends Controller
                 "checkoutRequestID"=>$checkoutRequestID,
                 "resultCode"=>$resultCode,
                 "resultDesc"=>$resultDesc,
-                "status "=>$status ,
+                "status "=>Config::ACTIVE,
                 "businessShortCode"=>$businessShortCode,
                "transactionType"=>$transactionType,
-                "dateModified"=>$dateModified,
-                "dateCreated"=>$dateCreated,
+                "dateModified"=>$this->functions->curlDate(),
+                "dateCreated"=>$this->functions->curlDate(),
                 ]);
             if($recordsUpdated >0)
             {

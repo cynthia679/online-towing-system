@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Conf\Config;
+use App\Helpers\GeneralFunctions;
 use App\Models\Location;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
+    private $functions;
+
+    function __construct()
+    {
+        $this->functions = new GeneralFunctions();
+    }
+
     public function index()
     {
         try {
@@ -42,13 +50,11 @@ class LocationController extends Controller
         try {
             $name = $request->name;
              $status = $request->status;
-              $dateModified = $request->dateModified;
                $dateCreated = $request->dateCreated;
             $category =Location::create([
                 "name"=>$name,
                  "status"=>$status,
-                  "dateModified"=>$dateModified,
-                   "dateCreated"=>$dateCreated,
+                   "dateCreated"=>$this->functions->curlDate(),
             ]);
             if(isset($category->id))
             {
@@ -81,15 +87,13 @@ class LocationController extends Controller
         try {
             $name = $request->name;
             $id = $request->id;
-            $status = $request->status;
-            $dateModified = $request->dateModified;
-            $dateCreated = $request->dateCreated;
+            $status = $request->Config::ACTIVE;
+            $dateCreated = $request->$this->functions->curlDate();
             $recordsUpdated =Location::where(['id'=>$id])
                 ->update([
                     "name"=>$name,
-                    "status"=>$status,
-                    "dateModified"=>$dateModified,
-                    "dateCreated"=>$dateCreated,
+                    "status"=>Config::ACTIVE,
+                    "dateCreated"=>$this->functions->curlDate(),
                 ]);
             if($recordsUpdated >0)
             {
