@@ -105,7 +105,7 @@ class ProductController extends Controller
                     "color" => $color,
                     "description" => $description,
                     "status" => Config::ACTIVE,
-                    "dateModified" => $this->functions->curlDate()
+                    "dateModified" => $this->functions->curlDate(),
                 ]);
             if ($recordsUpdated > 0) {
                 $response = array(
@@ -126,6 +126,7 @@ class ProductController extends Controller
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA" => []
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }
@@ -180,6 +181,7 @@ class ProductController extends Controller
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA" => []
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
 

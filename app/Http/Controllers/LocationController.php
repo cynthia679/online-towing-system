@@ -49,11 +49,10 @@ class LocationController extends Controller
     {
         try {
             $name = $request->name;
-             $status = $request->status;
-               $dateCreated = $request->dateCreated;
+             $status =Config::ACTIVE;
             $category =Location::create([
                 "name"=>$name,
-                 "status"=>$status,
+                 "status"=>Config::ACTIVE,
                    "dateCreated"=>$this->functions->curlDate(),
             ]);
             if(isset($category->id))
@@ -86,10 +85,9 @@ class LocationController extends Controller
     {
         try {
             $name = $request->name;
-            $id = $request->id;
-            $status = $request->Config::ACTIVE;
-            $dateCreated = $request->$this->functions->curlDate();
-            $recordsUpdated =Location::where(['id'=>$id])
+            $status =Config::ACTIVE;
+            $dateCreated =$this->functions->curlDate();
+            $recordsUpdated =Location::where(['id' => $request->id])
                 ->update([
                     "name"=>$name,
                     "status"=>Config::ACTIVE,

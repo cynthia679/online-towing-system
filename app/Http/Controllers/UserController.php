@@ -48,11 +48,9 @@ class UserController extends Controller
     public function create(Request $request)
     {
         try {
-            $name = $request->firstName;
-            $name = $request->lastName;
-            $status = $request->Config::ACTIVE;
-            $activationCode = $request->activationCode;,
-            $activatedAt = $request->$this->functions->curlDate();
+            $name = $request->name;
+            $status = Config::ACTIVE;
+            $activationCode = $request->activationCode;
             $email = $request->email;
             $password= $request->password;
             $users =User::create([
@@ -85,20 +83,19 @@ class UserController extends Controller
                 "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         try {
-            $name = $request->firstName;
-            $name = $request->lastName;
-            $status = $request->Config::ACTIVE;
+            $name = $request->name;
+            $status = Config::ACTIVE;
             $activationCode = $request->activationCode;
-            $activatedAt = $request->$this->functions->curlDate();
             $email = $request->email;
             $password= $request->password;
-            $recordsUpdated =User::where(['id' => $id])
+            $recordsUpdated =User::where(['id' => $request->id])
                 ->update([
                     "name"=>$name,
                     "status"=>Config::ACTIVE,
@@ -108,6 +105,7 @@ class UserController extends Controller
                     "password"=>$password,
 
                 ]);
+
             if($recordsUpdated >0)
             {
                 $response = array(
@@ -130,6 +128,8 @@ class UserController extends Controller
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
+
         }
         return json_encode($response);
     }
