@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 $router->group(['prefix' => 'api/v1/category/'], function($router)
 {
     $router->post('index','\App\Http\Controllers\CategoryController@index');
@@ -37,9 +38,9 @@ $router->group(['prefix' => 'api/v1/location/'], function($router)
 $router->group(['prefix' => 'api/v1/client/'], function($router)
 {
     $router->post('findById','\App\Http\Controllers\ClientController@findById');
-    $router->post('create','\App\Http\Controllers\Client@create');
+    $router->post('create','\App\Http\Controllers\ClientController@create');
     $router->post('update','\App\Http\Controllers\ClientController@update');
-    $router->post('delete','\App\Http\Controllers\ClientLocationController@deleteById');
+    $router->post('delete','\App\Http\Controllers\ClientController@deleteById');
     $router->post('findById','\App\Http\Controllers\ClientController@findById');
 
 });
@@ -55,16 +56,16 @@ $router->group(['prefix' => 'api/v1/product/'], function($router)
 $router->group(['prefix' => 'api/v1/transaction/'], function($router)
 {
     $router->post('findById','\App\Http\Controllers\TransactionController@findById');
-    $router->post('create','\App\Http\Controllers\Transaction@create');
+    $router->post('create','\App\Http\Controllers\TransactionController@create');
     $router->post('update','\App\Http\Controllers\TransactionController@update');
-    $router->post('delete','\App\Http\Controllers\TransactionLocationController@deleteById');
+    $router->post('delete','\App\Http\Controllers\TransactionController@deleteById');
     $router->post('findById','\App\Http\Controllers\TransactionController@findById');
 
 });
 $router->group(['prefix' => 'api/v1/user/'], function($router)
 {
     $router->post('findById','\App\Http\Controllers\UserController@findById');
-    $router->post('create','\App\Http\Controllers\User@create');
+    $router->post('create','\App\Http\Controllers\UserController@create');
     $router->post('update','\App\Http\Controllers\UserController@update');
     $router->post('delete','\App\Http\Controllers\UserController@deleteById');
     $router->post('findById','\App\Http\Controllers\UserController@findById');
@@ -73,9 +74,9 @@ $router->group(['prefix' => 'api/v1/user/'], function($router)
 $router->group(['prefix' => 'api/v1/setting/'], function($router)
 {
     $router->post('findById','\App\Http\Controllers\SettingController@findById');
-    $router->post('create','\App\Http\Controllers\Setting@create');
+    $router->post('create','\App\Http\Controllers\SettingController@create');
     $router->post('update','\App\Http\Controllers\SettingController@update');
-    $router->post('delete','\App\Http\Controllers\SettingLocationController@deleteById');
+    $router->post('delete','\App\Http\Controllers\SettingController@deleteById');
     $router->post('findById','\App\Http\Controllers\SettingController@findById');
 
 });
@@ -85,14 +86,14 @@ $router->group(['prefix' => 'api/v1/CustomerRequest/'], function($router)
     $router->post('findById','\App\Http\Controllers\CustomerRequestController@findById');
     $router->post('create','\App\Http\Controllers\CustomerRequest@create');
     $router->post('update','\App\Http\Controllers\CustomerRequestController@update');
-    $router->post('delete','\App\Http\Controllers\CustomerRequestLocationController@deleteById');
+    $router->post('delete','\App\Http\Controllers\CustomerRequestController@deleteById');
     $router->post('findById','\App\Http\Controllers\CustomerRequestController@findById');
 
 });
-$router->group(['prefix' => 'api/v1/Order/'], function($router)
+$router->group(['prefix' => 'api/v1/order/'], function($router)
 {
     $router->post('findById','\App\Http\Controllers\OrderController@findById');
-    $router->post('create','\App\Http\Controllers\Order@create');
+    $router->post('create','\App\Http\Controllers\OrderController@create');
     $router->post('update','\App\Http\Controllers\OrderController@update');
     $router->post('delete','\App\Http\Controllers\OrderController@deleteById');
     $router->post('findById','\App\Http\Controllers\OrderController@findById');

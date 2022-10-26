@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Conf\Config;
 use App\Helpers\GeneralFunctions;
-use App\Models\Category;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -57,9 +56,6 @@ class OrderController extends Controller
                 $toAddress = $request->toAddress;
                  $charge = $request->charge;
                   $distance = $request->distance;
-                   $status = $request->Config::ACTIVE;
-                    $dateModified = $request->dateModified;
-                     $dateCreated = $request->$this->functions->curlDate();
             $orders =Order::create([
                 "userId"=>$userId,
                 "customerRequestId"=>$customerRequestId,
@@ -69,8 +65,6 @@ class OrderController extends Controller
                 "charge"=>$charge,
                 "distance"=>$distance,
                 "status"=>Config::ACTIVE,
-                "dateModified"=>$dateModified,
-                "dateCreated"=>$this->functions->curlDate(),
             ]);
             if(isset($orders->id))
             {
@@ -108,9 +102,9 @@ class OrderController extends Controller
             $toAddress = $request->toAddress;
             $charge = $request->charge;
             $distance = $request->distance;
-            $status = $request->Config::ACTIVE;
+            $status = Config::ACTIVE;
             $dateModified = $request->dateModified;
-            $dateCreated = $request->$this->functions->curlDate();
+            $dateCreated = $this->functions->curlDate();
             $recordsUpdated =Order::where(['id'=>$id])
                 ->update([
                     "userId"=>$userId,
@@ -146,6 +140,7 @@ class OrderController extends Controller
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }
@@ -153,7 +148,7 @@ class OrderController extends Controller
     public function findById(Request $request)
     {
         try {
-            $orders = Category::where(['id'=>$request->id])->first();
+            $orders = Order::where(['id'=>$request->id])->first();
             if(isset($orders->id))
             {
                 $response = array(
@@ -205,6 +200,7 @@ class OrderController extends Controller
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }

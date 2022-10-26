@@ -54,17 +54,13 @@ class TransactionController extends Controller
                   $amount = $request->amount;
                        $mpesaReceiptNumber = $request->mpesaReceiptNumber;
                         $balance = $request->balance;
-                             $transactionDate = $request->$this->functions->curlDate();
                                   $namemerchantRequestID = $request->merchantRequestID;
-                                       $checkoutRequestID = $request->checkoutRequestID
+                                       $checkoutRequestID = $request->checkoutRequestID;
                                            $resultCode = $request->resultCode;
                                                $resultDesc = $request->resultDesc;
-                                               $status = $request->Config::ACTIVE;
+                                               $status = Config::ACTIVE;
                                                $businessShortCode = $request->businessShortCode;
                                                $transactionType= $request->transactionType;
-                                                $dateModified= $request->$this->functions->curlDate();
-                                                 $dateCreated= $request->$this->functions->curlDate;
-
 
             $transaction =Transaction::create([
                 "MSISDN"=>$MSISDN,
@@ -72,12 +68,12 @@ class TransactionController extends Controller
                 "amount"=>$amount,
                 "mpesaReceiptNumber"=>$mpesaReceiptNumber,
                 "balance"=>$balance,
-                "transactionDate"=>$transactionDate,
+                "transactionDate"=>$this->functions->curlDate(),
                 "namemerchantRequestID"=>$namemerchantRequestID,
                 "checkoutRequestID"=>$checkoutRequestID,
                 "resultCode"=>$resultCode,
                 "resultDesc"=>$resultDesc,
-                "status "=>Config::ACTIVE ,
+                "status "=>Config::ACTIVE,
                 "businessShortCode"=>$businessShortCode,
                "transactionType"=>$transactionType,
                 "dateModified"=>$this->functions->curlDate(),
@@ -106,6 +102,7 @@ class TransactionController extends Controller
                 "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }
@@ -118,16 +115,15 @@ class TransactionController extends Controller
             $amount = $request->amount;
             $mpesaReceiptNumber = $request->mpesaReceiptNumber;
             $balance = $request->balance;
-            $transactionDate = $request->transactionDate;
-            $namemerchantRequestID = $request->merchantRequestID;
+            $merchantRequestID = $request->merchantRequestID;
             $checkoutRequestID = $request->checkoutRequestID;
-                                           $resultCode = $request->resultCode;
-                                               $resultDesc = $request->resultDesc;
-                                               $status = $request->Config::ACTIVE;
-                                               $businessShortCode = $request->businessShortCode;
-                                               $transactionType= $request->transactionType;
-                                                $dateModified= $request->$this->functions->curlDate();
-                                                 $dateCreated= $request->$this->functions->curlDate();
+            $resultCode = $request->resultCode;
+            $resultDesc = $request->resultDesc;
+            $status = Config::ACTIVE;
+            $businessShortCode = $request->businessShortCode;
+            $transactionType= $request->transactionType;
+            $dateModified= $this->functions->curlDate();
+            $dateCreated= $this->functions->curlDate();
             $recordsUpdated =Transaction::where(['id'=>$id])
                 ->update([
                 "MSISDN"=>$MSISDN,
@@ -135,12 +131,12 @@ class TransactionController extends Controller
                 "amount"=>$amount,
                 "mpesaReceiptNumber"=>$mpesaReceiptNumber,
                 "balance"=>$balance,
-                "transactionDate"=>$transactionDate,
-                "namemerchantRequestID"=>$namemerchantRequestID,
+                "transactionDate"=>$this->functions->curlDate(),
+                "merchantRequestID"=>$merchantRequestID,
                 "checkoutRequestID"=>$checkoutRequestID,
                 "resultCode"=>$resultCode,
                 "resultDesc"=>$resultDesc,
-                "status "=>Config::ACTIVE,
+                "status"=>Config::ACTIVE,
                 "businessShortCode"=>$businessShortCode,
                "transactionType"=>$transactionType,
                 "dateModified"=>$this->functions->curlDate(),
@@ -168,6 +164,7 @@ class TransactionController extends Controller
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }

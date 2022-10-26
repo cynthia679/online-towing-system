@@ -36,25 +36,25 @@ class VerifyCsrfToken extends Middleware
         'api/v1/client/update',
         'api/v1/client/delete',
         'api/v1/client/findById',
-/**
- * CustomerRequest apis
- */
+       /**
+        * CustomerRequest apis
+        */
         'api/v1/customerRequest/index',
         'api/v1/customerRequest/create',
         'api/v1/customerRequest/update',
         'api/v1/customerRequest/delete',
         'api/v1/customerRequest/findById',
-/**
- * Order apis
- */
+        /**
+        * Order apis
+          */
         'api/v1/order/index',
         'api/v1/order/create',
         'api/v1/order/update',
         'api/v1/order/delete',
         'api/v1/order/findById',
-/**
- * Product apis
- */
+        /**
+       * Product apis
+        */
         'api/v1/product/index',
         'api/v1/product/create',
         'api/v1/product/update',
@@ -63,22 +63,22 @@ class VerifyCsrfToken extends Middleware
         /**
          * User apis
          */
-        'api/v1/user /index',
-        'api/v1/user /create',
-        'api/v1/user /update',
-        'api/v1/user /delete',
-        'api/v1/user /findById',
-/**
- * Transaction apis
- */
+        'api/v1/user/index',
+        'api/v1/user/create',
+        'api/v1/user/update',
+        'api/v1/user/delete',
+        'api/v1/user/findById',
+        /**
+        * Transaction apis
+         */
         'api/v1/transaction/index',
         'api/v1/transaction/create',
         'api/v1/transaction/update',
         'api/v1/transaction/delete',
         'api/v1/transaction/findById',
-/**
- * Setting apis
- */
+         /**
+        * Setting apis
+          */
         'api/v1/setting/index',
         'api/v1/setting/create',
         'api/v1/setting/update',

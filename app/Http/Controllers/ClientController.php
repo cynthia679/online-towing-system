@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Conf\Config;
 use App\Helpers\GeneralFunctions;
-use http\Client;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
 
@@ -54,18 +54,16 @@ class ClientController extends Controller
               $name = $request->lastName;
                $email = $request->email;
                 $password = $request->password;
-                 $status = $request->Config::ACTIVE;
+                 $status =Config::ACTIVE;
                   $activationCode = $request->activationCode;
-                   $loggedIn = $request->loggedIn;
-                    $loggedInAt = $request->$this->functions->curlDate();
-                      $dateCreated = $request->$this->functions->curlDate();
             $client =Client::create([
                 "name"=>$name,
+                "MSISDN"=>$MSISDN,
                 "email"=>$email,
                 "password"=>$password,
                 "status"=>Config::ACTIVE,
-                "activationCode "=>$activationCode ,
-                "loggedIn"=>$loggedIn,
+                "activationCode "=>$activationCode,
+                "loggedIn"=>Config::ACTIVE,
                 "loggedInAt"=>$this->functions->curlDate(),
                 "dateCreated"=>$this->functions->curlDate(),
 
@@ -74,7 +72,7 @@ class ClientController extends Controller
             {
                 $response = array(
                     "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Orders Created Successfully",
+                    "MESSAGE" =>"client Created Successfully",
                     "DATA"=>$client
                 );
             }else
@@ -92,6 +90,7 @@ class ClientController extends Controller
                 "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }
@@ -104,22 +103,18 @@ class ClientController extends Controller
             $name = $request->lastName;
             $email = $request->email;
             $password = $request->password;
-            $status = $request->Config::ACTIVE;
+            $status =Config::ACTIVE;
             $activationCode = $request->activationCode;
-            $loggedIn = $request->loggedIn;
-            $loggedInAt = $request->$this->functions->curlDate();
-            $dateModified = $request->dateModified;
-            $dateCreated = $request->$this->functions->curlDate();
+            $loggedIn =Config::ACTIVE;
             $recordsUpdated =Client::where(['id'=>$id])
                 ->update([
                     "name"=>$name,
                     "email"=>$email,
                     "password"=>$password,
                     "status"=>Config::ACTIVE,
-                    "activationCode "=>$activationCode ,
+                    "activationCode"=>$activationCode,
                     "loggedIn"=>$loggedIn,
                     "loggedInAt"=>$this->functions->curlDate(),
-                    "dateModified"=>$dateModified,
                     "dateCreated"=>$this->functions->curlDate(),
                 ]);
             if($recordsUpdated >0)
@@ -144,6 +139,7 @@ class ClientController extends Controller
                 "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
                 "DATA"=>[]
             );
+            dd($e->getMessage());
         }
         return json_encode($response);
     }
