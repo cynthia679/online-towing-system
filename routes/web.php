@@ -1,104 +1,60 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+// ===============================
+// ✅ Static Pages
+// ===============================
+Route::view('/', 'home')->name('home');
+Route::view('/welcome', 'welcome')->name('welcome');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// ===============================
+// ✅ Category Data Routes
+// ===============================
+Route::get('/fetch-categories', [CategoryController::class, 'fetchCategories'])->name('categories.fetch');
+Route::get('/categories-partial', [CategoryController::class, 'headerPartial'])->name('categories.partial');
 
-$router->group(['prefix' => 'api/v1/category/'], function($router)
-{
-    $router->post('index','\App\Http\Controllers\CategoryController@index');
-    $router->post('create','\App\Http\Controllers\CategoryController@create');
-    $router->post('update','\App\Http\Controllers\CategoryController@update');
-    $router->post('delete','\App\Http\Controllers\CategoryController@deleteById');
-    $router->post('findById','\App\Http\Controllers\CategoryController@findById');
-});
+// ===============================
+// ✅ Client Authentication
+// ===============================
+Route::get('/client-login', [AuthController::class, 'showClientLogin'])->name('client.login');
+Route::post('/client-login', [AuthController::class, 'loginClient'])->name('client.login.submit');
 
-$router->group(['prefix' => 'api/v1/location/'], function($router)
-{
-    $router->post('index','\App\Http\Controllers\LocationController@index');
-    $router->post('create','\App\Http\Controllers\LocationController@create');
-    $router->post('update','\App\Http\Controllers\LocationController@update');
-    $router->post('delete','\App\Http\Controllers\LocationController@deleteById');
-    $router->post('findById','\App\Http\Controllers\LocationController@findById');
-});
+Route::get('/client-register', [AuthController::class, 'showClientRegister'])->name('client.register');
+Route::post('/client-register', [AuthController::class, 'registerClient'])->name('client.register.submit');
 
-$router->group(['prefix' => 'api/v1/client/'], function($router)
-{
-    $router->post('findById','\App\Http\Controllers\ClientController@findById');
-    $router->post('create','\App\Http\Controllers\ClientController@create');
-    $router->post('update','\App\Http\Controllers\ClientController@update');
-    $router->post('delete','\App\Http\Controllers\ClientController@deleteById');
-    $router->post('findById','\App\Http\Controllers\ClientController@findById');
+// ===============================
+// ✅ Admin Authentication
+// ===============================
+Route::get('/admin-login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+Route::post('/admin-login', [AuthController::class, 'loginAdmin'])->name('admin.login.submit');
 
-});
-$router->group(['prefix' => 'api/v1/product/'], function($router)
-{
-    $router->post('findById','\App\Http\Controllers\ProductController@findById');
-    $router->post('create','\App\Http\Controllers\ProductController@create');
-    $router->post('update','\App\Http\Controllers\ProductController@update');
-    $router->post('delete','\App\Http\Controllers\ProductController@deleteById');
-    $router->post('findById','\App\Http\Controllers\ProductController@findById');
+// ===============================
+// ✅ Driver Authentication
+// ===============================
+Route::get('/driver-login', [AuthController::class, 'showDriverLogin'])->name('driver.login');
+Route::post('/driver-login', [AuthController::class, 'loginDriver'])->name('driver.login.submit');
 
-});
-$router->group(['prefix' => 'api/v1/transaction/'], function($router)
-{
-    $router->post('findById','\App\Http\Controllers\TransactionController@findById');
-    $router->post('create','\App\Http\Controllers\TransactionController@create');
-    $router->post('update','\App\Http\Controllers\TransactionController@update');
-    $router->post('delete','\App\Http\Controllers\TransactionController@deleteById');
-    $router->post('findById','\App\Http\Controllers\TransactionController@findById');
+// ===============================
+// ✅ Logout
+// ===============================
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-});
-$router->group(['prefix' => 'api/v1/user/'], function($router)
-{
-    $router->post('findById','\App\Http\Controllers\UserController@findById');
-    $router->post('create','\App\Http\Controllers\UserController@create');
-    $router->post('update','\App\Http\Controllers\UserController@update');
-    $router->post('delete','\App\Http\Controllers\UserController@deleteById');
-    $router->post('findById','\App\Http\Controllers\UserController@findById');
+// ===============================
+// ✅ Category Management
+// ===============================
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 
-});
-$router->group(['prefix' => 'api/v1/setting/'], function($router)
-{
-    $router->post('findById','\App\Http\Controllers\SettingController@findById');
-    $router->post('create','\App\Http\Controllers\SettingController@create');
-    $router->post('update','\App\Http\Controllers\SettingController@update');
-    $router->post('delete','\App\Http\Controllers\SettingController@deleteById');
-    $router->post('findById','\App\Http\Controllers\SettingController@findById');
-
-});
-
-$router->group(['prefix' => 'api/v1/CustomerRequest/'], function($router)
-{
-    $router->post('findById','\App\Http\Controllers\CustomerRequestController@findById');
-    $router->post('create','\App\Http\Controllers\CustomerRequest@create');
-    $router->post('update','\App\Http\Controllers\CustomerRequestController@update');
-    $router->post('delete','\App\Http\Controllers\CustomerRequestController@deleteById');
-    $router->post('findById','\App\Http\Controllers\CustomerRequestController@findById');
-
-});
-$router->group(['prefix' => 'api/v1/order/'], function($router)
-{
-    $router->post('findById','\App\Http\Controllers\OrderController@findById');
-    $router->post('create','\App\Http\Controllers\OrderController@create');
-    $router->post('update','\App\Http\Controllers\OrderController@update');
-    $router->post('delete','\App\Http\Controllers\OrderController@deleteById');
-    $router->post('findById','\App\Http\Controllers\OrderController@findById');
-
-});
-
-
-
+// ===============================
+// ✅ Dashboard
+// ===============================
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
