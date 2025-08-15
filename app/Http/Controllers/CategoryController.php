@@ -7,53 +7,74 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    // List all categories
+    // =========================
+    // Return all categories as JSON or HTML partial
+    // =========================
+    public function fetchCategories()
+    {
+        $categories = Category::all();
+        return response()->json($categories);
+    }
+
+    // =========================
+    // Return partial view for header
+    // =========================
+    public function headerPartial()
+    {
+        $categories = Category::all();
+        return view('partials.categories-header', compact('categories'));
+    }
+
+    // =========================
+    // Display categories list
+    // =========================
     public function index()
     {
         $categories = Category::all();
         return view('categories.index', compact('categories'));
     }
 
-    // Show create form
+    // =========================
+    // Show create category form
+    // =========================
     public function create()
     {
         return view('categories.create');
     }
 
-    // Store new category
+    // =========================
+    // Store a new category
+    // =========================
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|unique:categories,name|max:255',
         ]);
 
         Category::create([
             'name' => $request->name,
-            'status' => 'active',
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Category added successfully!');
+        return redirect()->route('categories.index')->with('success', 'Category created successfully!');
     }
 
-    // Show single category details
+    // =========================
+    // Show a single category
+    // =========================
     public function show($id)
     {
         $category = Category::findOrFail($id);
         return view('categories.show', compact('category'));
     }
 
+    // =========================
     // Delete a category
+    // =========================
     public function destroy($id)
     {
-        Category::findOrFail($id)->delete();
+        $category = Category::findOrFail($id);
+        $category->delete();
+
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
     }
-
-// headerPartial
-public function headerPartial()
-{
-    $categories = Category::where('status', 'active')->get();
-    return view('partials.categories', compact('categories'));
-}
-
 }
