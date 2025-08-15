@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -46,20 +47,17 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-            'role' => 'client',
-        ];
+        if (Auth::attempt($request->only('email', 'password'))) {
+            if (Auth::user()->role !== 'client') {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Invalid client credentials.']);
+            }
 
-        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('client.dashboard');
         }
 
-        return back()->withErrors([
-            'email' => 'Invalid client credentials.',
-        ]);
+        return back()->withErrors(['email' => 'Invalid client credentials.']);
     }
 
     // ===== ADMIN LOGIN =====
@@ -75,20 +73,17 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-            'role' => 'admin',
-        ];
+        if (Auth::attempt($request->only('email', 'password'))) {
+            if (Auth::user()->role !== 'admin') {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Invalid admin credentials.']);
+            }
 
-        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('admin.dashboard');
         }
 
-        return back()->withErrors([
-            'email' => 'Invalid admin credentials.',
-        ]);
+        return back()->withErrors(['email' => 'Invalid admin credentials.']);
     }
 
     // ===== DRIVER LOGIN =====
@@ -104,20 +99,17 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-            'role' => 'driver',
-        ];
+        if (Auth::attempt($request->only('email', 'password'))) {
+            if (Auth::user()->role !== 'driver') {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Invalid driver credentials.']);
+            }
 
-        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('driver.dashboard');
         }
 
-        return back()->withErrors([
-            'email' => 'Invalid driver credentials.',
-        ]);
+        return back()->withErrors(['email' => 'Invalid driver credentials.']);
     }
 
     // ===== LOGOUT =====
@@ -126,6 +118,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 }

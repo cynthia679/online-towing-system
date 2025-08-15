@@ -1,60 +1,79 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TowingController;
 
 // ===============================
-// ✅ Static Pages
+// Static Pages
 // ===============================
 Route::view('/', 'home')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
 
 // ===============================
-// ✅ Category Data Routes
+// Category Data
 // ===============================
 Route::get('/fetch-categories', [CategoryController::class, 'fetchCategories'])->name('categories.fetch');
 Route::get('/categories-partial', [CategoryController::class, 'headerPartial'])->name('categories.partial');
 
 // ===============================
-// ✅ Client Authentication
+// Authentication
 // ===============================
-Route::get('/client-login', [AuthController::class, 'showClientLogin'])->name('client.login');
-Route::post('/client-login', [AuthController::class, 'loginClient'])->name('client.login.submit');
+// Client
+Route::prefix('client')->group(function () {
+    Route::get('/login', [AuthController::class, 'showClientLogin'])->name('client.login');
+    Route::post('/login', [AuthController::class, 'loginClient'])->name('client.login.submit');
 
-Route::get('/client-register', [AuthController::class, 'showClientRegister'])->name('client.register');
-Route::post('/client-register', [AuthController::class, 'registerClient'])->name('client.register.submit');
+    Route::get('/register', [AuthController::class, 'showClientRegister'])->name('client.register');
+    Route::post('/register', [AuthController::class, 'registerClient'])->name('client.register.submit');
+});
 
-// ===============================
-// ✅ Admin Authentication
-// ===============================
-Route::get('/admin-login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
-Route::post('/admin-login', [AuthController::class, 'loginAdmin'])->name('admin.login.submit');
+// Admin
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+    Route::post('/login', [AuthController::class, 'loginAdmin'])->name('admin.login.submit');
+});
 
-// ===============================
-// ✅ Driver Authentication
-// ===============================
-Route::get('/driver-login', [AuthController::class, 'showDriverLogin'])->name('driver.login');
-Route::post('/driver-login', [AuthController::class, 'loginDriver'])->name('driver.login.submit');
+// Driver
+Route::prefix('driver')->group(function () {
+    Route::get('/login', [AuthController::class, 'showDriverLogin'])->name('driver.login');
+    Route::post('/login', [AuthController::class, 'loginDriver'])->name('driver.login.submit');
+});
 
-// ===============================
-// ✅ Logout
-// ===============================
+// Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ===============================
-// ✅ Category Management
+// Category Management
 // ===============================
-Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/', [CategoryController::class, 'store'])->name('categories.store');
+    Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/{id}', [CategoryController::class, 'show'])->name('categories.show');
+});
 
 // ===============================
-// ✅ Dashboard
+// Authenticated Routes (Dashboards & Towing)
 // ===============================
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('dashboard');
+Route::middleware('auth')->group(function () {
+
+    // Client
+    Route::prefix('client')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
+        Route::get('/towing/create', [TowingController::class, 'create'])->name('towing.create');
+        Route::post('/towing', [TowingController::class, 'store'])->name('towing.store');
+    });
+
+    // Admin
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
+    });
+
+    // Driver
+    Route::prefix('driver')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'driver'])->name('driver.dashboard');
+    });
+});

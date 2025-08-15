@@ -26,6 +26,7 @@ class User extends Authenticatable
         'activatedAt',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -46,4 +47,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get all towings for the user.
+     */
+    public function towings()
+    {
+        return $this->hasMany(Towing::class);
+    }
 }
