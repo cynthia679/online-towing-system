@@ -15,9 +15,17 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
+
+            // Towing service fields
+            $table->string('phone')->nullable();
+            $table->string('pickup')->nullable();
+            $table->string('destination')->nullable();
+            $table->double('amount')->nullable();
+            $table->string('status')->nullable();
+
+            // M-Pesa fields
             $table->string('MSISDN')->nullable();
             $table->string('accountNumber')->nullable();
-            $table->double('amount')->nullable();
             $table->string('mpesaReceiptNumber')->nullable();
             $table->double('balance')->nullable();
             $table->dateTime('transactionDate')->nullable();
@@ -25,7 +33,6 @@ class CreateTransactionsTable extends Migration
             $table->string('checkoutRequestID')->nullable();
             $table->string('resultCode')->nullable();
             $table->string('resultDesc')->nullable();
-            $table->integer('status')->nullable();
             $table->string('firstName')->nullable();
             $table->string('middleName')->nullable();
             $table->string('lastName')->nullable();

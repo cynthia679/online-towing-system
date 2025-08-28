@@ -1,9 +1,17 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TowingController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PriceController;
+
+// ===============================
+// Default Login
+// ===============================
+Route::get('/login', [AuthController::class, 'showClientLogin'])->name('login');
 
 // ===============================
 // Static Pages
@@ -20,22 +28,18 @@ Route::get('/categories-partial', [CategoryController::class, 'headerPartial'])-
 // ===============================
 // Authentication
 // ===============================
-// Client
 Route::prefix('client')->group(function () {
     Route::get('/login', [AuthController::class, 'showClientLogin'])->name('client.login');
     Route::post('/login', [AuthController::class, 'loginClient'])->name('client.login.submit');
-
     Route::get('/register', [AuthController::class, 'showClientRegister'])->name('client.register');
     Route::post('/register', [AuthController::class, 'registerClient'])->name('client.register.submit');
 });
 
-// Admin
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
     Route::post('/login', [AuthController::class, 'loginAdmin'])->name('admin.login.submit');
 });
 
-// Driver
 Route::prefix('driver')->group(function () {
     Route::get('/login', [AuthController::class, 'showDriverLogin'])->name('driver.login');
     Route::post('/login', [AuthController::class, 'loginDriver'])->name('driver.login.submit');
@@ -56,6 +60,35 @@ Route::prefix('categories')->group(function () {
 });
 
 // ===============================
+// Payment (M-Pesa Integration)
+// ===============================
+Route::prefix('payment')->group(function () {
+    // Standalone payment index page (must come first)
+    Route::get('/', [TransactionController::class, 'index'])->name('payment.index');
+
+    // Payment form by towing ID
+    Route::get('/{towingId}', [TransactionController::class, 'showPaymentForm'])->name('payment.form');
+
+    // Initiate STK Push
+    Route::post('/initiate/{towingId}', [TransactionController::class, 'initiateMpesa'])->name('payment.initiate');
+
+    // Safaricom Callback
+    Route::post('/callback', [TransactionController::class, 'mpesaCallback'])->name('payment.callback');
+
+    // Success / Failed pages
+    Route::get('/success', [TransactionController::class, 'success'])->name('payment.success');
+    Route::get('/failed', [TransactionController::class, 'failed'])->name('payment.failed');
+
+    // Check payment status
+    Route::get('/status/{id}', [TransactionController::class, 'status'])->name('payment.status');
+});
+
+// ===============================
+// Price Calculation
+// ===============================
+Route::get('/calculate-price', [PriceController::class, 'calculate'])->name('price.calculate');
+
+// ===============================
 // Authenticated Routes (Dashboards & Towing)
 // ===============================
 Route::middleware('auth')->group(function () {
@@ -63,6 +96,9 @@ Route::middleware('auth')->group(function () {
     // Client
     Route::prefix('client')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
+
+        // ✅ Added towing.index route
+        Route::get('/towing', [TowingController::class, 'index'])->name('towing.index');
         Route::get('/towing/create', [TowingController::class, 'create'])->name('towing.create');
         Route::post('/towing', [TowingController::class, 'store'])->name('towing.store');
     });
