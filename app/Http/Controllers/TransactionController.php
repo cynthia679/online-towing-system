@@ -2,230 +2,141 @@
 
 namespace App\Http\Controllers;
 
-use App\Conf\Config;
-use App\Helpers\GeneralFunctions;
-use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use App\Models\Transaction;
+use App\Models\Towing;
 
 class TransactionController extends Controller
 {
-    private $functions;
-
-    function __construct()
-    {
-        $this->functions = new GeneralFunctions();
-    }
-
+    // Show all transactions and towings for payment
     public function index()
     {
-        try {
-            $transaction= Transaction::all();
-            if(count($transaction) > 0)
-            {
-                $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"transactionFetched Successfully",
-                    "DATA"=>$transaction
-                );
-            }else
-            {
-                $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"No Records Found",
-                    "DATA"=>$transaction
-                );
-            }
-        }catch (\Exception $e)
-        {
-            $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
-                "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
-            );
-        }
-        return json_encode($response);
+        $transactions = Transaction::orderBy('id', 'desc')->get();
+        $towings = Towing::all(); // Fetch all towings
+        return view('payments.index', compact('transactions', 'towings'));
     }
-    public function create(Request $request)
+
+    // Show payment form for a single towing (optional)
+    public function showPaymentForm($towingId)
     {
-        try
-        {
-            $MSISDN = $request->MSISDN;
-             $accountNumber = $request->accountNumber;
-                  $amount = $request->amount;
-                       $mpesaReceiptNumber = $request->mpesaReceiptNumber;
-                        $balance = $request->balance;
-                                  $namemerchantRequestID = $request->merchantRequestID;
-                                       $checkoutRequestID = $request->checkoutRequestID;
-                                           $resultCode = $request->resultCode;
-                                               $resultDesc = $request->resultDesc;
-                                               $status = Config::ACTIVE;
-                                               $businessShortCode = $request->businessShortCode;
-                                               $transactionType= $request->transactionType;
+        $towing = Towing::find($towingId);
 
-            $transaction =Transaction::create([
-                "MSISDN"=>$MSISDN,
-                "accountNumber"=>$accountNumber,
-                "amount"=>$amount,
-                "mpesaReceiptNumber"=>$mpesaReceiptNumber,
-                "balance"=>$balance,
-                "transactionDate"=>$this->functions->curlDate(),
-                "namemerchantRequestID"=>$namemerchantRequestID,
-                "checkoutRequestID"=>$checkoutRequestID,
-                "resultCode"=>$resultCode,
-                "resultDesc"=>$resultDesc,
-                "status "=>Config::ACTIVE,
-                "businessShortCode"=>$businessShortCode,
-               "transactionType"=>$transactionType,
-                "dateModified"=>$this->functions->curlDate(),
-                "dateCreated"=>$this->functions->curlDate(),
+        if (!$towing) {
+            return redirect()->route('payment.index')->with('error', 'Towing request not found.');
+        }
 
+        return view('payments.form', compact('towing'));
+    }
+
+
+    // Initiate M-Pesa STK Push
+    public function initiateMpesa(Request $request, Towing $towing)
+    {
+        $phone = $request->input('phone');
+        $amount = $towing->price ?? $request->input('amount', 1);
+
+        // Get access token
+        $consumerKey = env('MPESA_CONSUMER_KEY');
+        $consumerSecret = env('MPESA_CONSUMER_SECRET');
+
+        $tokenResponse = Http::withBasicAuth($consumerKey, $consumerSecret)
+            ->get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials');
+
+        $accessToken = $tokenResponse['access_token'];
+
+        $timestamp = date('YmdHis');
+        $shortCode = env('MPESA_SHORTCODE');
+        $passkey = env('MPESA_PASSKEY');
+        $password = base64_encode($shortCode . $passkey . $timestamp);
+
+        $stkResponse = Http::withToken($accessToken)
+            ->post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', [
+                "BusinessShortCode" => $shortCode,
+                "Password" => $password,
+                "Timestamp" => $timestamp,
+                "TransactionType" => "CustomerPayBillOnline",
+                "Amount" => $amount,
+                "PartyA" => $phone,
+                "PartyB" => $shortCode,
+                "PhoneNumber" => $phone,
+                "CallBackURL" => env('MPESA_CALLBACK_URL'),
+                "AccountReference" => "TowingService",
+                "TransactionDesc" => "Payment for towing"
             ]);
-            if(isset($transaction->id))
-            {
-                $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Transaction Created Successfully",
-                    "DATA"=>$transaction
-                );
-            }else
-            {
-                $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"Error occurred in creating Transaction",
-                    "DATA"=>$transaction
-                );
-            }
-        }catch (\Exception $e)
-        {
-            $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
-                "MESSAGE" =>Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
-            );
-            dd($e->getMessage());
-        }
-        return json_encode($response);
-    }
-    public function update(Request $request)
-    {
-        try {
-            $id = $request->id;
-            $MSISDN = $request->MSISDN;
-            $accountNumber = $request->accountNumber;
-            $amount = $request->amount;
-            $mpesaReceiptNumber = $request->mpesaReceiptNumber;
-            $balance = $request->balance;
-            $merchantRequestID = $request->merchantRequestID;
-            $checkoutRequestID = $request->checkoutRequestID;
-            $resultCode = $request->resultCode;
-            $resultDesc = $request->resultDesc;
-            $status = Config::ACTIVE;
-            $businessShortCode = $request->businessShortCode;
-            $transactionType= $request->transactionType;
-            $dateModified= $this->functions->curlDate();
-            $dateCreated= $this->functions->curlDate();
-            $recordsUpdated =Transaction::where(['id'=>$id])
-                ->update([
-                "MSISDN"=>$MSISDN,
-                "accountNumber"=>$accountNumber,
-                "amount"=>$amount,
-                "mpesaReceiptNumber"=>$mpesaReceiptNumber,
-                "balance"=>$balance,
-                "transactionDate"=>$this->functions->curlDate(),
-                "merchantRequestID"=>$merchantRequestID,
-                "checkoutRequestID"=>$checkoutRequestID,
-                "resultCode"=>$resultCode,
-                "resultDesc"=>$resultDesc,
-                "status"=>Config::ACTIVE,
-                "businessShortCode"=>$businessShortCode,
-               "transactionType"=>$transactionType,
-                "dateModified"=>$this->functions->curlDate(),
-                "dateCreated"=>$this->functions->curlDate(),
-                ]);
-            if($recordsUpdated >0)
-            {
-                $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Transaction Updated Successfully",
-                    "DATA"=>[]
-                );
-            }else
-            {
-                $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"Error occurred in updating",
-                    "DATA"=>[]
-                );
-            }
-        }catch (\Exception $e)
-        {
-            $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
-                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
-            );
-            dd($e->getMessage());
-        }
-        return json_encode($response);
+
+        $responseBody = $stkResponse->json();
+
+        Transaction::create([
+            'MSISDN'             => $phone,
+            'accountNumber'      => 'TowingService',
+            'amount'             => $amount,
+            'merchantRequestID'  => $responseBody['MerchantRequestID'] ?? null,
+            'checkoutRequestID'  => $responseBody['CheckoutRequestID'] ?? null,
+            'resultCode'         => $responseBody['ResponseCode'] ?? null,
+            'resultDesc'         => $responseBody['ResponseDescription'] ?? null,
+            'status'             => 'Pending',
+            'businessShortCode'  => $shortCode,
+            'transactionType'    => 'STK Push',
+            'dateCreated'        => now(),
+            'dateModified'       => now(),
+        ]);
+
+        return response()->json($responseBody);
     }
 
-    public function findById(Request $request)
+    // M-Pesa Callback
+    public function mpesaCallback(Request $request)
     {
-        try {
-            $orders =Transaction::where(['id'=>$request->id])->first();
-            if(isset($transaction->id))
-            {
-                $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Transaction Fetched Successfully",
-                    "DATA"=>$transaction
-                );
-            }else
-            {
-                $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"No Transaction Found",
-                    "DATA"=>[]
-                );
-            }
-        }catch (\Exception $e)
-        {
-            $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
-                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
-            );
+        $data = $request->all();
+        \Log::info('M-Pesa Callback:', $data);
+
+        if (isset($data['Body']['stkCallback'])) {
+            $callback = $data['Body']['stkCallback'];
+
+            Transaction::where('checkoutRequestID', $callback['CheckoutRequestID'])
+                ->update([
+                    'mpesaReceiptNumber' => $callback['CallbackMetadata']['Item'][1]['Value'] ?? null,
+                    'transactionDate'    => $callback['CallbackMetadata']['Item'][3]['Value'] ?? null,
+                    'resultCode'         => $callback['ResultCode'],
+                    'resultDesc'         => $callback['ResultDesc'],
+                    'status'             => $callback['ResultCode'] == 0 ? 'Success' : 'Failed',
+                    'dateModified'       => now(),
+                ]);
         }
-        return json_encode($response);
+
+        return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Accepted']);
     }
-    public function deleteById(Request $request)
+
+    // Success page
+    public function success()
     {
-        try {
-            $records = Transaction::where(['id'=>$request->id])->delete();
-            if(isset($records)>0)
-            {
-                $response = array(
-                    "STATUS"=>Config::SUCCESSFULLY_PROCESSED_REQUEST,
-                    "MESSAGE" =>"Transaction deleted Successfully",
-                    "DATA"=>[]
-                );
-            }else
-            {
-                $response = array(
-                    "STATUS"=>Config::RECORD_NOT_FOUND_CODE,
-                    "MESSAGE" =>"No Transaction Found",
-                    "DATA"=>[]
-                );
-            }
-        }catch (\Exception $e)
-        {
-            $response = array(
-                "STATUS"=>Config::GENERIC_EXCEPTION_CODE,
-                "MESSAGE" => Config::GENERIC_EXCEPTION_MESSAGE,
-                "DATA"=>[]
-            );
+        return view('payments.success');
+    }
+
+    // Failed page
+    public function failed()
+    {
+        return view('payments.failed');
+    }
+
+    // Check transaction status by ID
+    public function status($id)
+    {
+        $transaction = Transaction::find($id);
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaction not found'], 404);
         }
-        return json_encode($response);
+
+        return response()->json([
+            'transaction_id'      => $transaction->id,
+            'phone'               => $transaction->MSISDN,
+            'amount'              => $transaction->amount,
+            'status'              => $transaction->status,
+            'mpesaReceiptNumber'  => $transaction->mpesaReceiptNumber,
+            'transactionDate'     => $transaction->transactionDate,
+            'resultDesc'          => $transaction->resultDesc,
+        ]);
     }
 }
-

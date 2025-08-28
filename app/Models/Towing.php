@@ -16,10 +16,12 @@ class Towing extends Model
         'destination',
         'vehicle_type',
         'description',
+        'phone',
         'status',
+        'price',
     ];
 
-    // Optional: relationship with User
+    // Relationship with User
     public function user()
     {
         return $this->belongsTo(User::class);

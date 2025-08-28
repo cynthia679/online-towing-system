@@ -39,9 +39,16 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" name="phone" id="phone" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="description" class="form-label">Description (optional)</label>
                         <textarea name="description" id="description" class="form-control" rows="3"></textarea>
                     </div>
+
+                    {{-- Price is handled in controller, so no input for now --}}
 
                     <button type="submit" class="btn btn-primary w-100">Submit Request</button>
                 </form>
