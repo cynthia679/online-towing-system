@@ -68,6 +68,33 @@ class CategoryController extends Controller
     }
 
     // =========================
+    // Show edit form
+    // =========================
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        return view('categories.edit', compact('category'));
+    }
+
+    // =========================
+    // Update category
+    // =========================
+    public function update(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+        ]);
+
+        $category->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully!');
+    }
+
+    // =========================
     // Delete a category
     // =========================
     public function destroy($id)

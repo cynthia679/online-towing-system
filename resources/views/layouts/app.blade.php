@@ -14,7 +14,6 @@
             margin: 0;
         }
         .container {
-            max-width: auto;
             margin: auto;
             background: white;
             padding: 20px;
@@ -48,60 +47,74 @@
             background-color: #007bff;
             color: #fff;
         }
-
     </style>
 </head>
 <body>
 
-    <div class="container">
-        @include('partials.header')
-        @include('partials.flash-message')
+<div class="container">
+    {{-- Header --}}
+    @include('partials.header')
 
-        <!-- 🔽 Injected header content here -->
-            <div id="header-content" class="mb-3"></div>
+    {{-- Logout Form --}}
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
 
-        <!-- ✅ Working Slider between header and footer -->
-        <div id="slider" style="width:100%; height:600px; overflow:hidden; position:relative; margin-bottom: 30px; border-radius: 8px;">
-            <img id="slideImage" src="{{ asset('images/slide1.jpg') }}"
-                 style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" alt="Slide Image">
-        </div>
+    {{-- Flash messages --}}
+    @include('partials.flash-message')
 
-        @yield('content')
+    {{-- Header content --}}
+    <div id="header-content" class="mb-3"></div>
 
-        @include('partials.footer')
+    {{-- Slider --}}
+    <div id="slider" style="width:100%; height:600px; overflow:hidden; position:relative; margin-bottom: 30px; border-radius: 8px;">
+        <img id="slideImage" src="{{ asset('images/slide1.jpg') }}"
+             style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" alt="Slide Image">
     </div>
 
-    <!-- Slider JavaScript -->
-    <script>
-        const images = [
-            "{{ asset('images/slide1.jpg') }}",
-            "{{ asset('images/slide2.jpg') }}",
-            "{{ asset('images/slide3.jpg') }}",
-            "{{ asset('images/slide3.jpg') }}"
-        ];
+    {{-- Main page content --}}
+    @yield('content')
 
-        let index = 0;
-        const slideTime = 3000;
+    {{-- Footer --}}
+    @include('partials.footer')
+</div>
 
-        function changeImage() {
-            index = (index + 1) % images.length;
-            document.getElementById('slideImage').src = images[index];
-        }
+{{-- Slider Script --}}
+<script>
+    const images = [
+        "{{ asset('images/slide1.jpg') }}",
+        "{{ asset('images/slide2.jpg') }}",
+        "{{ asset('images/slide3.jpg') }}"
+    ];
+    let index = 0;
+    const slideTime = 3000;
+    function changeImage() {
+        index = (index + 1) % images.length;
+        document.getElementById('slideImage').src = images[index];
+    }
+    window.addEventListener('load', function () {
+        setInterval(changeImage, slideTime);
+    });
+</script>
 
-        window.addEventListener('load', function () {
-            setInterval(changeImage, slideTime);
-        });
-    </script>
+{{-- Bootstrap --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{{-- Categories Script --}}
 <script>
     function loadCategories() {
-        fetch('/categories-partial')
+        fetch('{{ url("/categories-partial") }}')
             .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-content').innerHTML = html;
-            })
+            .then(html => document.getElementById('header-content').innerHTML = html)
             .catch(error => console.error('Error loading categories:', error));
+    }
+</script>
+
+{{-- Logout helper --}}
+<script>
+    function logout() {
+        event.preventDefault();
+        document.getElementById('logout-form').submit();
     }
 </script>
 

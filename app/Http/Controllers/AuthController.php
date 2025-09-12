@@ -33,6 +33,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'client',
+            'status' => 'approved', // clients approved automatically
         ]);
 
         Auth::login($user);
@@ -86,7 +87,31 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'Invalid admin credentials.']);
     }
 
-    // ===== DRIVER LOGIN =====
+    // ===== DRIVER REGISTER & LOGIN =====
+    public function showDriverRegister()
+    {
+        return view('auth.register-driver');
+    }
+
+    public function registerDriver(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'driver',
+            'status' => 'pending', // driver needs admin approval
+        ]);
+
+        return redirect()->route('driver.login')->with('success', 'Registration submitted. Await admin approval.');
+    }
+
     public function showDriverLogin()
     {
         return view('auth.login-driver');
@@ -100,9 +125,16 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            if (Auth::user()->role !== 'driver') {
+            $user = Auth::user();
+
+            if ($user->role !== 'driver') {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Invalid driver credentials.']);
+            }
+
+            if ($user->status !== 'approved') {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Your account is not approved yet.']);
             }
 
             $request->session()->regenerate();

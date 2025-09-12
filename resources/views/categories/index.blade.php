@@ -1,58 +1,50 @@
 @extends('layouts.app')
 
+@section('title', 'All Categories')
+
 @section('content')
-<div class="container">
+    <h1>All Categories</h1>
 
+    {{-- Success Message --}}
     @if(session('success'))
-        <div class="alert alert-success" style="margin-bottom:1rem;">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <h2>All Categories</h2>
+    {{-- Admin: Add Category form at the top --}}
+    @auth
+        @if(Auth::user()->role === 'admin')
+            <div class="mb-4">
+                <form action="{{ route('categories.store') }}" method="POST" class="d-flex gap-2">
+                    @csrf
+                    <input type="text" name="name" class="form-control" placeholder="New Category" required>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>
+            </div>
+        @endif
+    @endauth
 
-    {{-- Validation Errors --}}
-    @if ($errors->any())
-        <div class="alert alert-danger" style="margin-bottom:1rem;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    {{-- A. Form to Add New Category --}}
-    <form action="{{ route('categories.store') }}" method="POST">
-        @csrf
-        <div>
-            <label for="name">Category Name:</label>
-            <input type="text" name="name" id="name" value="{{ old('name') }}" required>
-            <button type="submit">Add Category</button>
-        </div>
-    </form>
-
-    <hr>
-
-    {{-- B. List Existing Categories --}}
-    @if(count($categories) > 0)
-        <ul>
+    {{-- Display Categories --}}
+    @if($categories->count() > 0)
+        <ul class="list-group">
             @foreach($categories as $category)
-                <li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
                     {{ $category->name }}
-                    (Status: {{ $category->status }})
 
-                    {{-- Delete Form --}}
-                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit">Delete</button>
-                    </form>
+                    {{-- Only show delete button for admin --}}
+                    @auth
+                        @if(Auth::user()->role === 'admin')
+                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
+                                  onsubmit="return confirm('Are you sure?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        @endif
+                    @endauth
                 </li>
             @endforeach
         </ul>
     @else
         <p>No categories found.</p>
     @endif
-</div>
 @endsection
