@@ -83,6 +83,9 @@ class VerifyCsrfToken extends Middleware
         'api/v1/setting/create',
         'api/v1/setting/update',
         'api/v1/setting/delete',
-        'api/v1/setting/findById'
+       'api/v1/setting/findById',
+
+       // M-Pesa Daraja callback - Safaricom cannot provide a CSRF token
+       'payment/callback',
     ];
 }
