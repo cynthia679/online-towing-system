@@ -87,7 +87,9 @@
        "{{ secure_asset('images/slide1.jpg') }}",
        "{{ secure_asset('images/slide2.jpg') }}",
        "{{ secure_asset('images/slide3.jpg') }}",
-       "{{ secure_asset('images/slide4.jpg') }}"
+       "{{ secure_asset('images/slide4.jpg') }}",
+       "{{ secure_asset('images/slide5.jpg') }}",
+       "{{ secure_asset('images/slide6.jpg') }}"
     ];
 
 let index = 0;
@@ -99,11 +101,7 @@ function changeImage() {
     const slideImage = document.getElementById('slideImage');
     slideImage.src = images[index];
 
-    if (index === 2) {
-        slideImage.style.objectFit = 'contain';
-    } else {
-        slideImage.style.objectFit = 'cover';
-    }
+   slideImage.style.objectFit = 'cover';
 }
 
 window.addEventListener('load', function () {
