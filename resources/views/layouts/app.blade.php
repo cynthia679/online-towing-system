@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Online Towing System')</title>
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#0d6efd">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -84,17 +86,29 @@
     const images = [
         "{{ asset('images/slide1.jpg') }}",
         "{{ asset('images/slide2.jpg') }}",
-        "{{ asset('images/slide3.jpg') }}"
+        "{{ asset('images/slide3.jpg') }}",
+         "{{ asset('images/slide4.jpg') }}"
     ];
-    let index = 0;
-    const slideTime = 3000;
-    function changeImage() {
-        index = (index + 1) % images.length;
-        document.getElementById('slideImage').src = images[index];
+
+let index = 0;
+const slideTime = 3000;
+
+function changeImage() {
+    index = (index + 1) % images.length;
+
+    const slideImage = document.getElementById('slideImage');
+    slideImage.src = images[index];
+
+    if (index === 2) {
+        slideImage.style.objectFit = 'contain';
+    } else {
+        slideImage.style.objectFit = 'cover';
     }
-    window.addEventListener('load', function () {
-        setInterval(changeImage, slideTime);
-    });
+}
+
+window.addEventListener('load', function () {
+    setInterval(changeImage, slideTime);
+});
 </script>
 
 {{-- Bootstrap --}}
@@ -112,11 +126,24 @@
 
 {{-- Logout helper --}}
 <script>
-    function logout() {
-        event.preventDefault();
-        document.getElementById('logout-form').submit();
-    }
+    function logout(event) {
+    event.preventDefault();
+    document.getElementById('logout-form').submit();
+}
 </script>
 
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(function () {
+                    console.log('Service Worker registered');
+                })
+                .catch(function (error) {
+                    console.error('Service Worker registration failed:', error);
+                });
+        });
+    }
+</script>
 </body>
 </html>
