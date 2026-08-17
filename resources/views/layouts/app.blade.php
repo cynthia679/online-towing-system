@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Online Towing System')</title>
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+  <link rel="manifest" href="{{ secure_asset('manifest.json') }}">
     <meta name="theme-color" content="#0d6efd">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <link rel="stylesheet" href="{{ secure_asset('css/app.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -70,7 +70,7 @@
 
     {{-- Slider --}}
     <div id="slider" style="width:100%; height:600px; overflow:hidden; position:relative; margin-bottom: 30px; border-radius: 8px;">
-        <img id="slideImage" src="{{ asset('images/slide1.jpg') }}"
+       <img id="slideImage" src="{{ secure_asset('images/slide1.jpg') }}"
              style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" alt="Slide Image">
     </div>
 
@@ -84,10 +84,10 @@
 {{-- Slider Script --}}
 <script>
     const images = [
-        "{{ asset('images/slide1.jpg') }}",
-        "{{ asset('images/slide2.jpg') }}",
-        "{{ asset('images/slide3.jpg') }}",
-         "{{ asset('images/slide4.jpg') }}"
+       "{{ secure_asset('images/slide1.jpg') }}",
+       "{{ secure_asset('images/slide2.jpg') }}",
+       "{{ secure_asset('images/slide3.jpg') }}",
+       "{{ secure_asset('images/slide4.jpg') }}"
     ];
 
 let index = 0;
