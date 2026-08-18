@@ -35,7 +35,14 @@
 
                     <div class="mb-3">
                         <label for="vehicle_type" class="form-label">Vehicle Type</label>
-                        <input type="text" name="vehicle_type" id="vehicle_type" class="form-control" required>
+                        <select name="vehicle_type" id="vehicle_type" class="form-select" required>
+                            <option value="">Select vehicle type</option>
+                            <option value="Saloon">Saloon</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Pickup">Pickup</option>
+                            <option value="Van">Van</option>
+                            <option value="Truck">Truck</option>
+                        </select>
                     </div>
 
                     <div class="mb-3">

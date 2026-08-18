@@ -13,7 +13,7 @@
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
                     <h5>Total Towing Requests</h5>
-                    <h3>{{ $towingRequestsCount ?? 0 }}</h3>
+                   <h3>{{ $totalRequestsCount ?? 0 }}</h3>
                 </div>
             </div>
         </div>
