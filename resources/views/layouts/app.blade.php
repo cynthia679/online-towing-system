@@ -59,43 +59,6 @@
     {{-- Header --}}
     @include('partials.header')
 
-    {{-- Back / Dashboard / Forward Navigation --}}
-    <div class="d-flex justify-content-between align-items-center mb-3 px-2">
-
-        {{-- Back Button --}}
-        <button type="button" class="btn btn-secondary" onclick="history.back()">
-            ← Back
-        </button>
-
-        {{-- Dashboard / Home Button --}}
-        @auth
-            @php
-                $role = Auth::user()->role;
-
-                $dashboardRoute = match($role) {
-                    'admin' => 'admin.dashboard',
-                    'client' => 'client.dashboard',
-                    'driver' => 'driver.dashboard',
-                    default => 'home'
-                };
-            @endphp
-
-            <a href="{{ route($dashboardRoute) }}" class="btn btn-primary">
-                Dashboard
-            </a>
-        @else
-            <a href="{{ url('/') }}" class="btn btn-primary">
-                Home
-            </a>
-        @endauth
-
-        {{-- Forward Button --}}
-        <button type="button" class="btn btn-secondary" onclick="history.forward()">
-            Forward →
-        </button>
-
-    </div>
-
     {{-- Logout Form --}}
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
@@ -115,6 +78,43 @@
 
     {{-- Main page content --}}
     @yield('content')
+
+ {{-- Back / Dashboard / Forward Navigation --}}
+ <div class="d-flex justify-content-between align-items-center my-4 px-2">
+
+     {{-- Back --}}
+     <button type="button" class="btn btn-secondary" onclick="history.back()">
+         ← Go Back
+     </button>
+
+     {{-- Dashboard / Home --}}
+     @auth
+         @php
+             $role = Auth::user()->role;
+
+             $dashboardRoute = match($role) {
+                 'admin' => 'admin.dashboard',
+                 'client' => 'client.dashboard',
+                 'driver' => 'driver.dashboard',
+                 default => 'home'
+             };
+         @endphp
+
+         <a href="{{ route($dashboardRoute) }}" class="btn btn-primary">
+             Dashboard
+         </a>
+     @else
+         <a href="{{ url('/') }}" class="btn btn-primary">
+             Home
+         </a>
+     @endauth
+
+     {{-- Forward --}}
+     <button type="button" class="btn btn-secondary" onclick="history.forward()">
+         Go Forward →
+     </button>
+
+ </div>
 
     {{-- Footer --}}
     @include('partials.footer')
