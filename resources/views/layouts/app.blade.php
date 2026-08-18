@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Online Towing System')</title>
-  <link rel="manifest" href="{{ secure_asset('manifest.json') }}">
+  <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="theme-color" content="#0d6efd">
-  <link rel="stylesheet" href="{{ secure_asset('css/app.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
             font-family: sans-serif;
-            background-color: green;
+            background-color: white;
             padding: 0;
             margin: 0;
         }
         .container {
-            margin: auto;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
             background: white;
             padding: 20px;
-            box-shadow: 0 0 10px #ccc;
+            box-shadow: none;
         }
         nav {
             background-color: #343a40;
@@ -70,7 +72,7 @@
 
     {{-- Slider --}}
     <div id="slider" style="width:100%; height:600px; overflow:hidden; position:relative; margin-bottom: 30px; border-radius: 8px;">
-       <img id="slideImage" src="{{ secure_asset('images/slide1.jpg') }}"
+       <img id="slideImage" src="{{ asset('images/slide1.jpg') }}"
              style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" alt="Slide Image">
     </div>
 
@@ -84,12 +86,12 @@
 {{-- Slider Script --}}
 <script>
     const images = [
-       "{{ secure_asset('images/slide1.jpg') }}",
-       "{{ secure_asset('images/slide2.jpg') }}",
-       "{{ secure_asset('images/slide3.jpg') }}",
-       "{{ secure_asset('images/slide4.jpg') }}",
-       "{{ secure_asset('images/slide5.jpg') }}",
-       "{{ secure_asset('images/slide6.jpg') }}"
+        "{{ asset('images/slide1.jpg') }}",
+        "{{ asset('images/slide2.jpg') }}",
+        "{{ asset('images/slide3.jpg') }}",
+        "{{ asset('images/slide4.jpg') }}",
+        "{{ asset('images/slide5.jpg') }}",
+        "{{ asset('images/slide6.jpg') }}"
     ];
 
 let index = 0;
@@ -115,7 +117,7 @@ window.addEventListener('load', function () {
 {{-- Categories Script --}}
 <script>
     function loadCategories() {
-        fetch('{{ url("/categories-partial") }}')
+      fetch('{{ route("categories.partial") }}')
             .then(response => response.text())
             .then(html => document.getElementById('header-content').innerHTML = html)
             .catch(error => console.error('Error loading categories:', error));
