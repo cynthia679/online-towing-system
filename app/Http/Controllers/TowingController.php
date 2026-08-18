@@ -66,32 +66,28 @@ class TowingController extends Controller
             ->with('success', 'Towing request deleted successfully!');
     }
 
-    // ===============================
-    // Client Payment (Mock for School Project)
-    // ===============================
-    public function pay($id)
-    {
-        $towing = Towing::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        // ===============================
+        // Client Payment
+        // ===============================
+        public function pay($id)
+        {
+            $towing = Towing::where('id', $id)
+                ->where('user_id', auth()->id())
+                ->firstOrFail();
 
-        if ($towing->status !== 'completed') {
-            return redirect()->route('towing.index')
-                ->with('error', 'Cannot pay before towing is completed.');
+            if ($towing->status !== 'completed') {
+                return redirect()->route('towing.index')
+                    ->with('error', 'Cannot pay before towing is completed.');
+            }
+
+            if ($towing->payment_status === 'Paid') {
+                return redirect()->route('towing.index')
+                    ->with('info', 'This request is already paid.');
+            }
+
+            // Go to the M-Pesa payment form
+            return redirect()->route('payment.form', ['towingId' => $towing->id]);
         }
-
-        if ($towing->payment_status === 'Paid') {
-            return redirect()->route('towing.index')
-                ->with('info', 'This request is already paid.');
-        }
-
-        // Mock payment: instantly mark as Paid
-        $towing->payment_status = 'Paid';
-        $towing->save();
-
-        return redirect()->route('towing.index')
-            ->with('success', 'Payment completed successfully (mock).');
-    }
 
     // ===============================
     // Admin Section
