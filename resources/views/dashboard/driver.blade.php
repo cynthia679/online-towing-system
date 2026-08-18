@@ -45,6 +45,53 @@
         </div>
     </div>
 
+ <!-- Earnings & Payment Stats -->
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total Earnings</h6>
+                    <p class="h4 mb-0 text-success">
+                        KSh {{ number_format($totalEarnings, 2) }}
+                    </p>
+                    <small class="text-muted">
+                        From paid completed jobs
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Pending Payment</h6>
+                    <p class="h4 mb-0 text-warning">
+                        KSh {{ number_format($pendingEarnings, 2) }}
+                    </p>
+                    <small class="text-muted">
+                        Completed but not yet paid
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Paid Jobs</h6>
+                    <p class="h4 mb-0">
+                        {{ $paidCompletedCount }}
+                    </p>
+                    <small class="text-muted">
+                        Completed and paid
+                    </small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <!-- Assigned Requests List -->
     <div class="card shadow-sm">
         <div class="card-header">My Requests</div>

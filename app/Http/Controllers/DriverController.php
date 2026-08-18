@@ -17,18 +17,43 @@ class DriverController extends Controller
         $inProgressRequestsCount = Towing::where('driver_id', $driverId)->where('status', 'in_progress')->count();
         $completedRequestsCount = Towing::where('driver_id', $driverId)->where('status', 'completed')->count();
 
-        // All requests assigned to this driver (with client details)
-        $assignedRequests = Towing::with('client')
-            ->where('driver_id', $driverId)
-            ->latest()
-            ->paginate(10); // ✅ Use paginate instead of get()
+    // All requests assigned to this driver
+    $assignedRequests = Towing::with('client')
+        ->where('driver_id', $driverId)
+        ->latest()
+        ->paginate(10);
+
+        // Driver earnings
+        // Driver receives 90% after customer payment is confirmed.
+        $paidCompletedRequests = Towing::where('driver_id', $driverId)
+            ->where('status', 'completed')
+            ->where('payment_status', 'Paid')
+            ->get();
+
+        $totalEarnings = $paidCompletedRequests->sum(function ($towing) {
+            return (float) $towing->price * 0.90;
+        });
+
+        // Completed jobs waiting for customer payment
+        $pendingEarnings = Towing::where('driver_id', $driverId)
+            ->where('status', 'completed')
+            ->where(function ($query) {
+                $query->whereNull('payment_status')
+                    ->orWhere('payment_status', '!=', 'Paid');
+            })
+            ->sum('price');
+
+        $paidCompletedCount = $paidCompletedRequests->count();
 
         return view('dashboard.driver', compact(
             'assignedRequests',
             'assignedRequestsCount',
             'acceptedRequestsCount',
             'inProgressRequestsCount',
-            'completedRequestsCount'
+            'completedRequestsCount',
+            'totalEarnings',
+            'pendingEarnings',
+            'paidCompletedCount'
         ));
     }
 
